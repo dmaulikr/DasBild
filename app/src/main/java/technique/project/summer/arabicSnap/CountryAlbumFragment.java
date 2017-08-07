@@ -43,7 +43,11 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onViewCreated: ");
         super.onViewCreated(view, savedInstanceState);
-        mCountryAlbumAdapter = new CountryAlbumAdapter(getContext());
+
+
+
+        mAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
+        mCountryAlbumAdapter = new CountryAlbumAdapter(getContext(),mAlbumRecyclerView);
         mCountryAlbumAdapter.setOnLoadMoreListener(new CountryAlbumAdapter.OnLoadMoreListener() {
             @Override
             public void onLoadMore() {
@@ -54,30 +58,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
 
             }
         });
-
-
-        mAlbumRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
-            @Override
-            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
-                super.onScrolled(recyclerView, dx, dy);
-                GridLayoutManager layoutManger = (GridLayoutManager) recyclerView.getLayoutManager();
-
-                int itemsNumber = layoutManger.getItemCount();
-                int lastVisibleItemPosition = layoutManger.findLastCompletelyVisibleItemPosition();
-
-                if(dy>0){
-                    Log.d(TAG, "onScrolled: itemsNumber="+itemsNumber+" and astVisibleItemPosition="+lastVisibleItemPosition);
-
-                    if(itemsNumber <= lastVisibleItemPosition+5 && !mCountryAlbumAdapter.isLoading()){
-                        mCountryAlbumAdapter.loadMoreListener.onLoadMore();
-                        mCountryAlbumAdapter.setLoadingState(true);
-                    }
-
-                }
-
-            }
-        });
-        mAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         mAlbumRecyclerView.setAdapter(mCountryAlbumAdapter);
     }
 
@@ -86,7 +66,10 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         Log.d(TAG, "onActivityCreated: ");
         super.onActivityCreated(savedInstanceState);
         mAlbumName = getArguments().getString(ALBUM_NAME_KEY);
-        if(mAlbumName != null)  getLoaderManager().initLoader(ALBUM_LOADER,null,this);
+        if(mAlbumName != null)  {
+            mCountryAlbumAdapter.setLoadingState(true);
+            getLoaderManager().initLoader(ALBUM_LOADER,null,this);
+        }
     }
 
     @Override
@@ -107,9 +90,8 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
             mAlbumRecyclerView.post(new Runnable() {
                 @Override
                 public void run() {
-                    Log.d(TAG, "run: ");
-                    mCountryAlbumAdapter.updatePhotosList(photos);
                     mCountryAlbumAdapter.setLoadingState(false);
+                    mCountryAlbumAdapter.updatePhotosList(photos);
                 }
             });
         }

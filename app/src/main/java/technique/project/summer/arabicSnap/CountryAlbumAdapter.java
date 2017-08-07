@@ -1,7 +1,10 @@
 package technique.project.summer.arabicSnap;
 
 import android.content.Context;
+import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -24,12 +27,48 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private Context mContext;
     private List<Photo> mPhotosList = new ArrayList<>();
-    public OnLoadMoreListener loadMoreListener;
-    private boolean loadingState = false;
+    private OnLoadMoreListener loadMoreListener;
+    private RecyclerView mRecyclerView ;
+    private boolean loadingState;
 
 
-    public CountryAlbumAdapter(Context context) {
+    public CountryAlbumAdapter(Context context,RecyclerView recyclerView) {
         this.mContext = context ;
+        this.mRecyclerView = recyclerView ;
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                LinearLayoutManager layoutManger = (LinearLayoutManager) recyclerView.getLayoutManager();
+                int itemsNumber = layoutManger.getItemCount();
+                int lastVisibleItemPosition = layoutManger.findLastCompletelyVisibleItemPosition();
+                if(dy>0){
+                        if(itemsNumber <= lastVisibleItemPosition+5 && !isLoading()){
+                            loadMoreListener.onLoadMore();
+                            setLoadingState(true);
+
+
+                    }
+                }
+            }
+        });
+        if(mRecyclerView.getLayoutManager() instanceof GridLayoutManager){
+            ((GridLayoutManager) mRecyclerView.getLayoutManager()).setSpanSizeLookup(
+                    new GridLayoutManager.SpanSizeLookup() {
+                        @Override
+                        public int getSpanSize(int position) {
+                            switch (getItemViewType(position)){
+                                case VIEW_TYPE_LOADING:
+                                    return 3;
+                                case VIEW_TYPE_ITEM:
+                                    return 1;
+                                default:
+                                    return -1;
+                            }
+                        }
+                    }
+            );
+        }
     }
 
     public CountryAlbumAdapter(Context mContext, List<Photo> photosList) {
@@ -104,6 +143,13 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
     public void setLoadingState(boolean loadingState) {
         this.loadingState = loadingState;
+        if(loadingState){
+            mPhotosList.add(null);
+            notifyItemInserted(mPhotosList.size()-1);
+        }else{
+            mPhotosList.remove(mPhotosList.size()-1);
+            notifyItemRemoved(mPhotosList.size());
+        }
     }
 
     public static class PhotoViewHolder extends RecyclerView.ViewHolder{
