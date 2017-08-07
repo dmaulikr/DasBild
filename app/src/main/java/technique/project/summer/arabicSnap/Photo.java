@@ -5,23 +5,23 @@ package technique.project.summer.arabicSnap;
  */
 
 public class Photo {
-    private final String  ID;
+    private final String id;
     private String description;
     private String url;
 
     public Photo(String ID, String url) {
-        this.ID = ID;
+        this.id = ID;
         this.url = url;
     }
 
     public Photo(String ID, String description, String url) {
-        this.ID = ID;
+        this.id = ID;
         this.description = description;
         this.url = url;
     }
 
-    public String getID() {
-        return ID;
+    public String getId() {
+        return id;
     }
 
     public String getDescription() {

@@ -18,9 +18,8 @@ public class MainActivity extends AppCompatActivity implements CountriesListAdap
     @Override
     protected void onStart() {
         Log.d(TAG, "onStart: ");
-        FragmentManager fm = getSupportFragmentManager();
         super.onStart();
-
+        FragmentManager fm = getSupportFragmentManager();
         if(fm.findFragmentByTag(CountriesListFragment.TAG) == null){
             fm.beginTransaction()
                     .add(R.id.fragment_countries_list_container,new CountriesListFragment(),CountriesListFragment.TAG)

@@ -20,8 +20,8 @@ import java.util.ArrayList;
 
 public class CountryAlbumFragment extends Fragment implements LoaderManager.LoaderCallbacks<Object>{
     public static final String TAG = "CountryAlbumFragment";
-    public static final int ALBUM_LOADER = 1;
     public static final String  ALBUM_NAME_KEY = "ALBUM_NAME_KEY";
+    public static final int ALBUM_LOADER = 1;
 
     private RecyclerView mAlbumRecyclerView;
     private CountryAlbumAdapter mCountryAlbumAdapter;
@@ -44,8 +44,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         Log.d(TAG, "onViewCreated: ");
         super.onViewCreated(view, savedInstanceState);
 
-
-
         mAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
         mCountryAlbumAdapter = new CountryAlbumAdapter(getContext(),mAlbumRecyclerView);
         mCountryAlbumAdapter.setOnLoadMoreListener(new CountryAlbumAdapter.OnLoadMoreListener() {
@@ -65,9 +63,10 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated: ");
         super.onActivityCreated(savedInstanceState);
+
         mAlbumName = getArguments().getString(ALBUM_NAME_KEY);
         if(mAlbumName != null)  {
-            mCountryAlbumAdapter.setLoadingState(true);
+            mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
             getLoaderManager().initLoader(ALBUM_LOADER,null,this);
         }
     }
@@ -84,13 +83,13 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoadFinished(Loader<Object> loader, Object data) {
+        Log.d(TAG, "onLoadFinished: ");
         if(loader.getId() == ALBUM_LOADER){
             final ArrayList<Photo> photos = (ArrayList<Photo>) data;
-            Log.d(TAG, "onLoadFinished :"+photos.size());
             mAlbumRecyclerView.post(new Runnable() {
                 @Override
                 public void run() {
-                    mCountryAlbumAdapter.setLoadingState(false);
+                    mCountryAlbumAdapter.setRecyclerViewLoadingState(false);
                     mCountryAlbumAdapter.updatePhotosList(photos);
                 }
             });

@@ -4,7 +4,6 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,11 +26,14 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private Context mContext;
     private List<Photo> mPhotosList = new ArrayList<>();
-    private OnLoadMoreListener loadMoreListener;
+    private OnLoadMoreListener mLoadMoreListener;
     private RecyclerView mRecyclerView ;
-    private boolean loadingState;
+    private boolean mRecyclerViewLoadingState;
 
 
+    interface OnLoadMoreListener{
+        public void onLoadMore();
+    }
     public CountryAlbumAdapter(Context context,RecyclerView recyclerView) {
         this.mContext = context ;
         this.mRecyclerView = recyclerView ;
@@ -44,14 +46,13 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 int lastVisibleItemPosition = layoutManger.findLastCompletelyVisibleItemPosition();
                 if(dy>0){
                         if(itemsNumber <= lastVisibleItemPosition+5 && !isLoading()){
-                            loadMoreListener.onLoadMore();
-                            setLoadingState(true);
-
-
+                            mLoadMoreListener.onLoadMore();
+                            setRecyclerViewLoadingState(true);
                     }
                 }
             }
         });
+
         if(mRecyclerView.getLayoutManager() instanceof GridLayoutManager){
             ((GridLayoutManager) mRecyclerView.getLayoutManager()).setSpanSizeLookup(
                     new GridLayoutManager.SpanSizeLookup() {
@@ -74,10 +75,6 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public CountryAlbumAdapter(Context mContext, List<Photo> photosList) {
         this.mContext = mContext;
         this.mPhotosList = photosList;
-    }
-
-    interface OnLoadMoreListener{
-        public void onLoadMore();
     }
 
     @Override
@@ -109,12 +106,10 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                     .apply(new RequestOptions().fitCenter())
                     .into(( (PhotoViewHolder) holder).mPhoto);
         }else{
-            loadMoreListener.onLoadMore();
+            mLoadMoreListener.onLoadMore();
         }
 
-
     }
-
 
     @Override
     public int getItemCount() {
@@ -127,23 +122,24 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         else return mPhotosList.get(index);
     }
 
-
     public void updatePhotosList(List<Photo> photosList) {
         for(int i=0;i<photosList.size();i++){
             mPhotosList.add(photosList.get(i));
         }
         notifyItemInserted(mPhotosList.size()-1);
     }
+
     public void setOnLoadMoreListener(OnLoadMoreListener listener){
-        this.loadMoreListener = listener;
+        this.mLoadMoreListener = listener;
     }
 
     public boolean isLoading(){
-        return loadingState;
+        return mRecyclerViewLoadingState;
     }
-    public void setLoadingState(boolean loadingState) {
-        this.loadingState = loadingState;
-        if(loadingState){
+
+    public void setRecyclerViewLoadingState(boolean mRecyclerViewLoadingState) {
+        this.mRecyclerViewLoadingState = mRecyclerViewLoadingState;
+        if(mRecyclerViewLoadingState){
             mPhotosList.add(null);
             notifyItemInserted(mPhotosList.size()-1);
         }else{

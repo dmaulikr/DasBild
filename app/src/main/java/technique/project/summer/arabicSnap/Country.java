@@ -11,8 +11,8 @@ public class Country {
     private String name;
     private String capital;
     private String flagURL;
-    private int photosNum = 0;
     private String code;
+    private int photosNum = 0;
     private ArrayList<Photo> photoArrayList ;
 
     public Country(String name, String capital, String code) {

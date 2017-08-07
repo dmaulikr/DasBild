@@ -26,6 +26,7 @@ public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
     private static final String REST_COUNTRY_API= "https://restcountries.eu/rest/v2";
     private static final String API_ENDPOINT= "regionalbloc";
     private static final String REGIONAL_BLOC= "al";
+
     public CountriesListLoader(Context context) {
         super(context);
     }
@@ -37,15 +38,18 @@ public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
         JSONObject countryJsonObject;
         ArrayList<Country> countryArrayList= new ArrayList<>();
         Log.d(TAG, "loadInBackground: ");
+
         Uri  url = new Uri.Builder()
                 .encodedPath(REST_COUNTRY_API)
                 .appendPath(API_ENDPOINT)
                 .appendPath(REGIONAL_BLOC)
                 .encodedQuery("fields=name;alpha2Code;capital")
                 .build();
+
         try {
             responseBodyString =  ApiUtils.run(url);
             countriesJsonArray = new JSONArray(responseBodyString);
+
             for (int i=0;i<countriesJsonArray.length();i++){
                 countryJsonObject = countriesJsonArray.getJSONObject(i);
                 countryArrayList.add(getCountryInstance(countryJsonObject));

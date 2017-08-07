@@ -19,6 +19,7 @@ import java.util.List;
  */
 
 public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
+
     private static final String TAG = "CountryAlbumLoader";
 
     public static final String PHOTO_API_BASE_URL = "https://api.500px.com/v1/photos/search";
@@ -40,24 +41,30 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
         mAlbumPageNumber = pageNumber;
     }
 
-
-
-
-
     private Photo getPhotoInstance (JSONObject jsonObject) throws JSONException {
 
         String id =  jsonObject.getString("id");
         String url = jsonObject.getString("image_url");
         String description = jsonObject.getString("description");
+
         return new Photo(id,description,url);
 
     }
+
+    public void forceLoad(int pageNumber) {
+        Log.d(TAG, "forceLoad: ");
+        super.forceLoad();
+        mAlbumPageNumber = pageNumber;
+        loadInBackground();
+    }
+
     @Override
     public ArrayList<Photo> loadInBackground() {
         Log.d(TAG, "loadInBackground: ");
         String responseBodyString;
         JSONArray photosJsonArray;
         ArrayList<Photo> photoArrayList = new ArrayList<>();
+
         Uri url = new Uri.Builder()
                 .encodedPath(PHOTO_API_BASE_URL)
                 .appendQueryParameter("term",mCountryName)
@@ -67,32 +74,29 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
                 .appendQueryParameter("consumer_key",API_CONSUMER_KEY)
                 .build();
         Log.d(TAG, "loadInBackground: the url is "+url);
+
         try{
               responseBodyString =  ApiUtils.run(url);
               photosJsonArray = new JSONObject(responseBodyString).getJSONArray("photos");
              for(int i=0;i<photosJsonArray.length();i++){
                  photoArrayList.add(getPhotoInstance(photosJsonArray.getJSONObject(i)));
-
              }
 
     } catch (IOException e) {
         e.printStackTrace();
     } finally {
-      return photoArrayList;
+            return photoArrayList;
     }
     }
 
     @Override
     protected void onStartLoading() {
+        Log.d(TAG, "onStartLoading: ");
         super.onStartLoading();
         forceLoad();
     }
 
 
-    public void forceLoad(int pageNumber) {
-        super.forceLoad();
-        mAlbumPageNumber = pageNumber;
-        loadInBackground();
-    }
+
 
 }

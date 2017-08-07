@@ -1,10 +1,7 @@
 package technique.project.summer.arabicSnap;
 
 import android.content.Context;
-import android.graphics.drawable.PictureDrawable;
-import android.net.Uri;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,10 +9,8 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.RequestBuilder;
 import com.bumptech.glide.request.RequestOptions;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,8 +20,8 @@ import java.util.List;
 
 public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdapter.CountryViewHolder> {
     private static final String TAG = "CountriesListAdapter";
-    private Context context;
-    private List<Country> countriesList;
+    private Context mContext;
+    private List<Country> mCountriesList;
     static private OnCountryItemClickedListener mCallback;
 
 
@@ -36,15 +31,15 @@ public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdap
     }
 
     public CountriesListAdapter(Context context, ArrayList<Country> countriesList) {
-        this.context = context;
-        this.countriesList = countriesList;
+        this.mContext = context;
+        this.mCountriesList = countriesList;
         if( context instanceof  OnCountryItemClickedListener){
             mCallback = (OnCountryItemClickedListener) context;
         }
 
     }
     public CountriesListAdapter(Context context) {
-        this.context = context;
+        this.mContext = context;
         if( context instanceof  OnCountryItemClickedListener){
             mCallback = (OnCountryItemClickedListener) context;
         }
@@ -52,7 +47,7 @@ public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdap
 
     @Override
     public CountryViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(context).inflate(R.layout.list_item_country, parent, false);
+        View view = LayoutInflater.from(mContext).inflate(R.layout.list_item_country, parent, false);
         return new CountryViewHolder(view);
     }
 
@@ -65,7 +60,7 @@ public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdap
         }else{
             holder.mNameTextView.setText(country.getName());
         }
-        Glide.with(context)
+        Glide.with(mContext)
                 .load(country.getFlagURL())
                 .apply(new RequestOptions().circleCrop())
                 .into(holder.mFlagImageView);
@@ -75,18 +70,18 @@ public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdap
 
     @Override
     public int getItemCount() {
-        if (countriesList == null) return 0;
-        else return countriesList.size();
+        if (mCountriesList == null) return 0;
+        else return mCountriesList.size();
     }
 
 
     private Country getCountryByIndex(int index) {
-        if (countriesList == null) return null;
-        else return countriesList.get(index);
+        if (mCountriesList == null) return null;
+        else return mCountriesList.get(index);
     }
 
-    public void setCountriesList(List<Country> countriesList) {
-        this.countriesList = countriesList;
+    public void setCountriesList(List<Country> mCountriesList) {
+        this.mCountriesList = mCountriesList;
         notifyDataSetChanged();
     }
 
