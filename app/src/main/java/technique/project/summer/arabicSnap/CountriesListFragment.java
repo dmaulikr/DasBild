@@ -54,11 +54,10 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated: ");
         super.onActivityCreated(savedInstanceState);
-        if(isOnline()){
+        if(ApiUtils.isOnline(getContext())){
             getLoaderManager().initLoader(COUNTRIES_LIST_LOADER,null,this);
         }else{
             mCountriesRecyclerView.setVisibility(View.GONE);
-
         }
 
     }
@@ -88,9 +87,5 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
 
     }
 
-    public boolean isOnline(){
-        ConnectivityManager cm = (ConnectivityManager) getContext().getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo netInfo = cm.getActiveNetworkInfo();
-        return netInfo != null && netInfo.isConnectedOrConnecting();
-    }
+
 }

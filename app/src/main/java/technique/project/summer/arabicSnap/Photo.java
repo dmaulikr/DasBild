@@ -1,10 +1,12 @@
 package technique.project.summer.arabicSnap;
 
+import java.io.Serializable;
+
 /**
  * Created by azeddine on 28/07/17.
  */
 
-public class Photo {
+public class Photo implements Serializable{
     private final String id;
     private String description;
     private String url;

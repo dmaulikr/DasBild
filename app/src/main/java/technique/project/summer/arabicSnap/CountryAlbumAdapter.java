@@ -27,12 +27,16 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private Context mContext;
     private List<Photo> mPhotosList = new ArrayList<>();
     private OnLoadMoreListener mLoadMoreListener;
+    static private OnPhotoClickedListener mOnPhotoClikedListener;
     private RecyclerView mRecyclerView ;
     private boolean mRecyclerViewLoadingState;
 
 
     interface OnLoadMoreListener{
-        public void onLoadMore();
+        void onLoadMore();
+    }
+    interface OnPhotoClickedListener {
+        void onPhotoClicked(Photo photo);
     }
     public CountryAlbumAdapter(Context context,RecyclerView recyclerView) {
         this.mContext = context ;
@@ -100,6 +104,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if(holder instanceof PhotoViewHolder){
             Photo photo = getCountryByIndex(position);
+            ((PhotoViewHolder) holder).mView.setTag(photo);
             Glide.with(mContext)
                     .load(photo.getUrl())
                     .apply(new RequestOptions().placeholder(mContext.getResources().getDrawable(R.drawable.ic_image)))
@@ -133,6 +138,10 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mLoadMoreListener = listener;
     }
 
+    public void setOnPhotoClikedListener(OnPhotoClickedListener listener){
+        this.mOnPhotoClikedListener  = listener;
+    }
+
     public boolean isLoading(){
         return mRecyclerViewLoadingState;
     }
@@ -148,13 +157,22 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public static class PhotoViewHolder extends RecyclerView.ViewHolder{
+    public static class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private ImageView mPhoto;
+        private View mView;
         public PhotoViewHolder(View itemView) {
             super(itemView);
+            mView = itemView;
             mPhoto  = itemView.findViewById(R.id.album_item);
         }
+        @Override
+        public void onClick(View view) {
+            Photo photo = (Photo) view.getTag();
+            mOnPhotoClikedListener.onPhotoClicked(photo);
+
+        }
     }
+
     public static class LoadingProgressViewHolder extends  RecyclerView.ViewHolder{
         private ProgressBar mProgressBar;
         public LoadingProgressViewHolder(View itemView) {

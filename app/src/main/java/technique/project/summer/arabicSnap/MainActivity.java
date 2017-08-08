@@ -1,12 +1,13 @@
 package technique.project.summer.arabicSnap;
 
+import android.content.Intent;
 import android.support.v4.app.FragmentManager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.widget.Toast;
 
-public class MainActivity extends AppCompatActivity implements CountriesListAdapter.OnCountryItemClickedListener {
+public class MainActivity extends AppCompatActivity implements CountriesListAdapter.OnCountryItemClickedListener , CountryAlbumAdapter.OnPhotoClickedListener{
     private static final String TAG = "MainActivity";
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,5 +54,12 @@ public class MainActivity extends AppCompatActivity implements CountriesListAdap
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_country_album_container,countryAlbumFragment,CountryAlbumFragment.TAG)
                 .commit();
+    }
+
+    @Override
+    public void onPhotoClicked(Photo photo) {
+        Intent intent = new Intent(MainActivity.this,PhotoProfileActivity.class);
+        intent.putExtra("Photo",photo);
+        startActivity(intent);
     }
 }

@@ -44,31 +44,39 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         Log.d(TAG, "onViewCreated: ");
         super.onViewCreated(view, savedInstanceState);
 
-        mAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
-        mCountryAlbumAdapter = new CountryAlbumAdapter(getContext(),mAlbumRecyclerView);
-        mCountryAlbumAdapter.setOnLoadMoreListener(new CountryAlbumAdapter.OnLoadMoreListener() {
-            @Override
-            public void onLoadMore() {
-                if(mAlbumName != null){
-                    albumPage++;
-                    ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).forceLoad(albumPage);
-                }
 
-            }
-        });
-        mAlbumRecyclerView.setAdapter(mCountryAlbumAdapter);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated: ");
         super.onActivityCreated(savedInstanceState);
+        if(ApiUtils.isOnline(getContext())){
+            mAlbumRecyclerView.setLayoutManager(new GridLayoutManager(getContext(),3));
 
-        mAlbumName = getArguments().getString(ALBUM_NAME_KEY);
-        if(mAlbumName != null)  {
-            mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
-            getLoaderManager().initLoader(ALBUM_LOADER,null,this);
+            mCountryAlbumAdapter = new CountryAlbumAdapter(getContext(),mAlbumRecyclerView);
+            mCountryAlbumAdapter.setOnLoadMoreListener(new CountryAlbumAdapter.OnLoadMoreListener() {
+                @Override
+                public void onLoadMore() {
+                    if(mAlbumName != null){
+                        albumPage++;
+                        ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).forceLoad(albumPage);
+                    }
+
+                }
+            });
+            mAlbumRecyclerView.setAdapter(mCountryAlbumAdapter);
+
+            mAlbumName = getArguments().getString(ALBUM_NAME_KEY);
+            if(mAlbumName != null)  {
+                mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
+                getLoaderManager().initLoader(ALBUM_LOADER,null,this);
+            }
+        }else {
+            // display empty album
         }
+
+
     }
 
     @Override
