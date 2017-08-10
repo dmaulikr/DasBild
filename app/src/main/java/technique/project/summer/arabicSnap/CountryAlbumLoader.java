@@ -3,7 +3,6 @@ package technique.project.summer.arabicSnap;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.content.AsyncTaskLoader;
-import android.support.v4.content.Loader;
 import android.util.Log;
 
 import org.json.JSONArray;
@@ -22,9 +21,10 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
 
     private static final String TAG = "CountryAlbumLoader";
 
-    public static final String PHOTO_API_BASE_URL = "https://api.500px.com/v1/photos/search";
+    public static final String PHOTO_API_BASE_URL = "https://api.500px.com/v1/photos";
     public static final String API_CONSUMER_KEY ="8rESAvR28TpJTguNMbEabYUkDRBXK2ldh2H6Ypy0";
     public static final String API_LARGE_IMAGE_SIZE ="600";
+    public static final String API_UNCROPPED_IMAGE_SIZE ="2048";
 
 
     private String mCountryName;
@@ -67,6 +67,7 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
 
         Uri url = new Uri.Builder()
                 .encodedPath(PHOTO_API_BASE_URL)
+                .appendPath("search")
                 .appendQueryParameter("term",mCountryName)
                 .appendQueryParameter("image_size",API_LARGE_IMAGE_SIZE)
                 .appendQueryParameter("page",""+mAlbumPageNumber)

@@ -2,6 +2,7 @@ package technique.project.summer.arabicSnap;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,6 +102,7 @@ public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdap
 
         @Override
         public void onClick(View view) {
+            Log.d(TAG, "onClick: ");
             String name = ((Country)view.getTag()).getName();
             mCallback.onCountryClicked(name);
         }

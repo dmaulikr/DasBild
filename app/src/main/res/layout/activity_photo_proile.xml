@@ -15,19 +15,20 @@
         android:layout_height="?actionBarSize">
         <ImageView
             android:id="@+id/photograph_profile_image"
-            android:layout_width="50dp"
-            android:layout_height="50dp" />
+            android:layout_width="45dp"
+            android:layout_height="45dp" />
         <TextView
             android:id="@+id/photographer_name"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="photographer"
-            style="@style/Base.TextAppearance.AppCompat.Title"
+            android:paddingStart="16dp"
+            style="@style/Base.TextAppearance.AppCompat.Medium"
             android:textColor="@android:color/white"/>
     </android.support.v7.widget.Toolbar>
 
     <ImageView
         android:id="@+id/photo"
+        android:background="@android:color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:scaleType="fitCenter"

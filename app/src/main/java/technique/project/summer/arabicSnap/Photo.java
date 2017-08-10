@@ -7,19 +7,26 @@ import java.io.Serializable;
  */
 
 public class Photo implements Serializable{
-    private final String id;
+    private  String id;
     private String description;
-    private String url;
+    private String croppedPhotoUrl;
+    private String unCroppedPhotoUrl;
+    private String photographerUsername;
+    private String photographerImageUrl;
 
+
+    public Photo() {
+
+    }
     public Photo(String ID, String url) {
         this.id = ID;
-        this.url = url;
+        this.croppedPhotoUrl = url;
     }
 
     public Photo(String ID, String description, String url) {
         this.id = ID;
         this.description = description;
-        this.url = url;
+        this.croppedPhotoUrl = url;
     }
 
     public String getId() {
@@ -30,7 +37,39 @@ public class Photo implements Serializable{
         return description;
     }
 
-    public String getUrl() {
-        return url;
+    public String getCroppedPhotoUrl() {
+        return croppedPhotoUrl;
+    }
+
+    public void setId(String id) {
+        this.id = id;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public void setUnCroppedPhotoUrl(String unCroppedPhotoUrl) {
+        this.unCroppedPhotoUrl = unCroppedPhotoUrl;
+    }
+
+    public void setPhotographerUsername(String photographerUsername) {
+        this.photographerUsername = photographerUsername;
+    }
+
+    public void setPhotographerImageUrl(String photographerImageUrl) {
+        this.photographerImageUrl = photographerImageUrl;
+    }
+
+    public String getUnCroppedPhotoUrl() {
+        return unCroppedPhotoUrl;
+    }
+
+    public String getPhotographerUsername() {
+        return photographerUsername;
+    }
+
+    public String getPhotographerImageUrl() {
+        return photographerImageUrl;
     }
 }

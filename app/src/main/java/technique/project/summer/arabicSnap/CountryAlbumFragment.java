@@ -65,6 +65,7 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
 
                 }
             });
+            mCountryAlbumAdapter.setOnPhotoClickedListener((CountryAlbumAdapter.OnPhotoClickedListener) getContext());
             mAlbumRecyclerView.setAdapter(mCountryAlbumAdapter);
 
             mAlbumName = getArguments().getString(ALBUM_NAME_KEY);

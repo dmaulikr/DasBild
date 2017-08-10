@@ -4,6 +4,7 @@ import android.content.Context;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,13 +22,14 @@ import java.util.List;
  */
 public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
 
+    private static final String TAG = "CountryAlbumAdapter";
     private final int VIEW_TYPE_ITEM = 0;
     private final int VIEW_TYPE_LOADING = 1;
 
     private Context mContext;
     private List<Photo> mPhotosList = new ArrayList<>();
     private OnLoadMoreListener mLoadMoreListener;
-    static private OnPhotoClickedListener mOnPhotoClikedListener;
+    static private OnPhotoClickedListener mOnPhotoClickedListener;
     private RecyclerView mRecyclerView ;
     private boolean mRecyclerViewLoadingState;
 
@@ -36,7 +38,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         void onLoadMore();
     }
     interface OnPhotoClickedListener {
-        void onPhotoClicked(Photo photo);
+        void onPhotoClicked(String id);
     }
     public CountryAlbumAdapter(Context context,RecyclerView recyclerView) {
         this.mContext = context ;
@@ -104,9 +106,9 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if(holder instanceof PhotoViewHolder){
             Photo photo = getCountryByIndex(position);
-            ((PhotoViewHolder) holder).mView.setTag(photo);
+            ((PhotoViewHolder) holder).mView.setTag(photo.getId());
             Glide.with(mContext)
-                    .load(photo.getUrl())
+                    .load(photo.getCroppedPhotoUrl())
                     .apply(new RequestOptions().placeholder(mContext.getResources().getDrawable(R.drawable.ic_image)))
                     .apply(new RequestOptions().fitCenter())
                     .into(( (PhotoViewHolder) holder).mPhoto);
@@ -138,8 +140,8 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mLoadMoreListener = listener;
     }
 
-    public void setOnPhotoClikedListener(OnPhotoClickedListener listener){
-        this.mOnPhotoClikedListener  = listener;
+    public void setOnPhotoClickedListener(OnPhotoClickedListener listener){
+        this.mOnPhotoClickedListener = listener;
     }
 
     public boolean isLoading(){
@@ -162,13 +164,15 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         private View mView;
         public PhotoViewHolder(View itemView) {
             super(itemView);
+            itemView.setOnClickListener(this);
             mView = itemView;
             mPhoto  = itemView.findViewById(R.id.album_item);
         }
         @Override
         public void onClick(View view) {
-            Photo photo = (Photo) view.getTag();
-            mOnPhotoClikedListener.onPhotoClicked(photo);
+            Log.d(TAG, "onClick: ");
+            String id = (String) view.getTag();
+            mOnPhotoClickedListener.onPhotoClicked(id);
 
         }
     }
