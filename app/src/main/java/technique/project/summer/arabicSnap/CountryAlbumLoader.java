@@ -25,37 +25,24 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
     public static final String API_CONSUMER_KEY ="8rESAvR28TpJTguNMbEabYUkDRBXK2ldh2H6Ypy0";
     public static final String API_LARGE_IMAGE_SIZE ="600";
     public static final String API_UNCROPPED_IMAGE_SIZE ="2048";
+    public static final int DEFAULT_ALBUM_PAGE = 1;
+    public static final int ALBUM_PAGE_IMAGE_NUM = 18;
 
 
     private String mCountryName;
-    private int mAlbumPageNumber = 1;
+    private int mAlbumPageNumber=DEFAULT_ALBUM_PAGE;
+    ArrayList<Photo> mSavedPhotos = new ArrayList<>();
 
     public CountryAlbumLoader(Context context,String countryName) {
         super(context);
         this.mCountryName =  countryName;
     }
 
-    public CountryAlbumLoader(Context context,String countryName,int pageNumber) {
-        super(context);
-        mCountryName =  countryName;
-        mAlbumPageNumber = pageNumber;
-    }
 
-    private Photo getPhotoInstance (JSONObject jsonObject) throws JSONException {
-
-        String id =  jsonObject.getString("id");
-        String url = jsonObject.getString("image_url");
-        String description = jsonObject.getString("description");
-
-        return new Photo(id,description,url);
-
-    }
-
-    public void forceLoad(int pageNumber) {
-        Log.d(TAG, "forceLoad: ");
-        super.forceLoad();
-        mAlbumPageNumber = pageNumber;
-        loadInBackground();
+    @Override
+    protected void onStartLoading() {
+        super.onStartLoading();
+        forceLoad();
     }
 
     @Override
@@ -68,10 +55,10 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
         Uri url = new Uri.Builder()
                 .encodedPath(PHOTO_API_BASE_URL)
                 .appendPath("search")
+                .encodedQuery("image_size="+API_LARGE_IMAGE_SIZE+","+API_UNCROPPED_IMAGE_SIZE)
                 .appendQueryParameter("term",mCountryName)
-                .appendQueryParameter("image_size",API_LARGE_IMAGE_SIZE)
                 .appendQueryParameter("page",""+mAlbumPageNumber)
-                .appendQueryParameter("rpp","18")
+                .appendQueryParameter("rpp",""+ALBUM_PAGE_IMAGE_NUM)
                 .appendQueryParameter("consumer_key",API_CONSUMER_KEY)
                 .build();
         Log.d(TAG, "loadInBackground: the url is "+url);
@@ -86,15 +73,42 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
     } catch (IOException e) {
         e.printStackTrace();
     } finally {
-            return photoArrayList;
-    }
+                mSavedPhotos.addAll(photoArrayList);
+                return photoArrayList;
+            }
     }
 
     @Override
-    protected void onStartLoading() {
-        Log.d(TAG, "onStartLoading: ");
-        super.onStartLoading();
-        forceLoad();
+    public void deliverResult(Object data) {
+        Log.d(TAG, "deliverResult: DATA SIZE "+((ArrayList<Photo>) data).size());
+        super.deliverResult(data);
+    }
+
+    @Override
+    protected void onReset() {
+        super.onReset();
+        Log.d(TAG, "onReset: ");
+    }
+
+
+    public void forceLoad(int pageNumber) {
+        Log.d(TAG, "forceLoad: ");
+        mAlbumPageNumber = pageNumber;
+        super.onForceLoad();
+    }
+
+    private Photo getPhotoInstance (JSONObject jsonObject) throws JSONException {
+        Photo photo = new Photo();
+        photo.setId(jsonObject.getString("id"));
+        photo.setCroppedPhotoUrl(jsonObject.getJSONArray("images").getJSONObject(0).getString("url"));
+        photo.setUnCroppedPhotoUrl(jsonObject.getJSONArray("images").getJSONObject(1).getString("url"));
+        photo.setDescription(jsonObject.getString("description"));
+        photo.setPhotographerImageUrl(jsonObject.getJSONObject("user").getString("userpic_url"));
+        photo.setPhotographerUsername(jsonObject.getJSONObject("user").getString("fullname"));
+
+
+        return photo;
+
     }
 
 

@@ -19,7 +19,7 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class PhotoProfileActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Object> {
+public class PhotoProfileActivity extends AppCompatActivity {
     private static final String TAG = "PhotoProfileActivity";
     public static final int  PHOTO_LOADER_ID = 3 ;
 
@@ -27,7 +27,6 @@ public class PhotoProfileActivity extends AppCompatActivity implements LoaderMan
     private TextView mPhotographerUsername;
     private ImageView mPhotoImageView;
     private Button mDonlowadButton;
-    private String mPhotoId;
     private Photo photo;
 
     @Override
@@ -42,12 +41,24 @@ public class PhotoProfileActivity extends AppCompatActivity implements LoaderMan
         getSupportActionBar().setTitle(null);
 
         mPhotoImageView = (ImageView) findViewById(R.id.photo);
-        mDonlowadButton = (Button) findViewById(R.id.download_button);
         mPhotographerProfileImage = (ImageView) findViewById(R.id.photograph_profile_image);
         mPhotographerUsername = (TextView) findViewById(R.id.photographer_name);
 
-        mPhotoId = getIntent().getExtras().getString("ID");
-        getSupportLoaderManager().initLoader(PHOTO_LOADER_ID,null,this);
+        photo = (Photo) getIntent().getSerializableExtra("Photo");
+
+        Log.d(TAG, "onCreate: the full image is "+photo.getUnCroppedPhotoUrl());
+        Glide.with(this)
+                .load(photo.getUnCroppedPhotoUrl())
+                .into(mPhotoImageView);
+
+
+        Glide.with(this)
+                .load(photo.getPhotographerImageUrl())
+                .apply(new RequestOptions().circleCrop())
+                .into(mPhotographerProfileImage);
+
+
+        mPhotographerUsername.setText(photo.getPhotographerUsername());
 
     }
 
@@ -56,38 +67,7 @@ public class PhotoProfileActivity extends AppCompatActivity implements LoaderMan
         super.onStart();
     }
 
-    @Override
-    public Loader<Object> onCreateLoader(int id, Bundle args) {
-        switch (id){
-            case PHOTO_LOADER_ID:
-                return new PhotoLoader(this,mPhotoId);
-            default:
-                return null ;
-        }
-    }
 
-    @Override
-    public void onLoadFinished(Loader<Object> loader, Object data) {
-        Log.d(TAG, "onLoadFinished: ");
-        photo = (Photo) data;
 
-        Log.d(TAG, "onLoadFinished: "+photo.getUnCroppedPhotoUrl());
-        Glide.with(this)
-                .load(photo.getUnCroppedPhotoUrl())
-                .into(mPhotoImageView);
 
-        Log.d(TAG, "onLoadFinished: "+photo.getPhotographerImageUrl());
-        Glide.with(this)
-                .load(photo.getPhotographerImageUrl())
-                .apply(new RequestOptions().circleCrop())
-                .into(mPhotographerProfileImage);
-        Log.d(TAG, "onLoadFinished: "+photo.getPhotographerUsername());
-        mPhotographerUsername.setText(photo.getPhotographerUsername());
-
-    }
-
-    @Override
-    public void onLoaderReset(Loader<Object> loader) {
-
-    }
 }

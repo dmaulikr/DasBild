@@ -57,10 +57,10 @@ public class MainActivity extends AppCompatActivity implements CountriesListAdap
     }
 
     @Override
-    public void onPhotoClicked(String id) {
+    public void onPhotoClicked(Photo photo) {
         Log.d(TAG, "onPhotoClicked: ");
         Intent intent = new Intent(MainActivity.this,PhotoProfileActivity.class);
-        intent.putExtra("ID",id);
+        intent.putExtra("Photo",photo);
         startActivity(intent);
     }
 }

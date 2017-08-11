@@ -1,6 +1,7 @@
 package technique.project.summer.arabicSnap;
 
 import android.content.Context;
+import android.support.v4.app.NavUtils;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -16,6 +17,7 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 
 /**
  * Created by azeddine on 31/07/17.
@@ -27,19 +29,22 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private final int VIEW_TYPE_LOADING = 1;
 
     private Context mContext;
-    private List<Photo> mPhotosList = new ArrayList<>();
+    private ArrayList<Photo> mPhotosList = new ArrayList<>();
     private OnLoadMoreListener mLoadMoreListener;
     static private OnPhotoClickedListener mOnPhotoClickedListener;
-    private RecyclerView mRecyclerView ;
+
+    private RecyclerView mRecyclerView  ;
     private boolean mRecyclerViewLoadingState;
 
 
     interface OnLoadMoreListener{
         void onLoadMore();
     }
+
     interface OnPhotoClickedListener {
-        void onPhotoClicked(String id);
+        void onPhotoClicked(Photo photo);
     }
+
     public CountryAlbumAdapter(Context context,RecyclerView recyclerView) {
         this.mContext = context ;
         this.mRecyclerView = recyclerView ;
@@ -52,8 +57,12 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 int lastVisibleItemPosition = layoutManger.findLastCompletelyVisibleItemPosition();
                 if(dy>0){
                         if(itemsNumber <= lastVisibleItemPosition+5 && !isLoading()){
-                            mLoadMoreListener.onLoadMore();
-                            setRecyclerViewLoadingState(true);
+                            mRecyclerView.post(new Runnable() {
+                                @Override
+                                public void run() {
+                                setRecyclerViewLoadingState(true);
+                                }
+                            });
                     }
                 }
             }
@@ -78,10 +87,8 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         }
     }
 
-    public CountryAlbumAdapter(Context mContext, List<Photo> photosList) {
-        this.mContext = mContext;
-        this.mPhotosList = photosList;
-    }
+
+
 
     @Override
     public int getItemViewType(int position) {
@@ -106,33 +113,31 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
         if(holder instanceof PhotoViewHolder){
             Photo photo = getCountryByIndex(position);
-            ((PhotoViewHolder) holder).mView.setTag(photo.getId());
+            ((PhotoViewHolder) holder).mView.setTag(photo);
             Glide.with(mContext)
                     .load(photo.getCroppedPhotoUrl())
                     .apply(new RequestOptions().placeholder(mContext.getResources().getDrawable(R.drawable.ic_image)))
                     .apply(new RequestOptions().fitCenter())
                     .into(( (PhotoViewHolder) holder).mPhoto);
         }else{
-            mLoadMoreListener.onLoadMore();
+            if (getCountryByIndex(0) != null)  mLoadMoreListener.onLoadMore();
         }
 
     }
 
     @Override
     public int getItemCount() {
-        if (mPhotosList == null) return 0;
-        else return mPhotosList.size();
+        if (mPhotosList == null) return 0; else return mPhotosList.size();
     }
 
     private Photo getCountryByIndex(int index) {
-        if (mPhotosList == null) return null;
-        else return mPhotosList.get(index);
+        if (mPhotosList == null) return null; else return mPhotosList.get(index);
     }
 
     public void updatePhotosList(List<Photo> photosList) {
-        for(int i=0;i<photosList.size();i++){
-            mPhotosList.add(photosList.get(i));
-        }
+        if(!mPhotosList.containsAll(photosList))  mPhotosList.addAll(photosList);
+    }
+    public void notifyAlbumUpdates(){
         notifyItemInserted(mPhotosList.size()-1);
     }
 
@@ -148,16 +153,17 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         return mRecyclerViewLoadingState;
     }
 
-    public void setRecyclerViewLoadingState(boolean mRecyclerViewLoadingState) {
-        this.mRecyclerViewLoadingState = mRecyclerViewLoadingState;
+    public void setRecyclerViewLoadingState(boolean recyclerViewLoadingState) {
+        this.mRecyclerViewLoadingState = recyclerViewLoadingState;
         if(mRecyclerViewLoadingState){
-            mPhotosList.add(null);
-            notifyItemInserted(mPhotosList.size()-1);
+                    mPhotosList.add(null);
+                    notifyItemInserted(mPhotosList.size()-1);
         }else{
-            mPhotosList.remove(mPhotosList.size()-1);
-            notifyItemRemoved(mPhotosList.size());
+                    mPhotosList.remove(mPhotosList.size()-1);
+                    notifyItemRemoved(mPhotosList.size());
+                }
         }
-    }
+
 
     public static class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener{
         private ImageView mPhoto;
@@ -171,8 +177,8 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         @Override
         public void onClick(View view) {
             Log.d(TAG, "onClick: ");
-            String id = (String) view.getTag();
-            mOnPhotoClickedListener.onPhotoClicked(id);
+            Photo photo = (Photo) view.getTag();
+            mOnPhotoClickedListener.onPhotoClicked(photo);
 
         }
     }
