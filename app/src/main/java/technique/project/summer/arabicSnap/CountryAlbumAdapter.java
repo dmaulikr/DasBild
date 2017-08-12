@@ -57,12 +57,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
                 int lastVisibleItemPosition = layoutManger.findLastCompletelyVisibleItemPosition();
                 if(dy>0){
                         if(itemsNumber <= lastVisibleItemPosition+5 && !isLoading()){
-                            mRecyclerView.post(new Runnable() {
-                                @Override
-                                public void run() {
-                                setRecyclerViewLoadingState(true);
-                                }
-                            });
+                            setRecyclerViewLoadingState(true);
                     }
                 }
             }
@@ -117,7 +112,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
             Glide.with(mContext)
                     .load(photo.getCroppedPhotoUrl())
                     .apply(new RequestOptions().placeholder(mContext.getResources().getDrawable(R.drawable.ic_image)))
-                    .apply(new RequestOptions().fitCenter())
+                    .apply(new RequestOptions().centerCrop())
                     .into(( (PhotoViewHolder) holder).mPhoto);
         }else{
             if (getCountryByIndex(0) != null)  mLoadMoreListener.onLoadMore();

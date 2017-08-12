@@ -1,6 +1,7 @@
 package technique.project.summer.arabicSnap;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -46,7 +47,8 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         mCountriesListAdapter = new CountriesListAdapter(getContext());
-        mCountriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),LinearLayoutManager.HORIZONTAL,false));
+        int orientation = this.getResources().getConfiguration().orientation;
+        mCountriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),(orientation == Configuration.ORIENTATION_PORTRAIT)?0:1,false));
         mCountriesRecyclerView.setAdapter(mCountriesListAdapter);
     }
 

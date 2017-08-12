@@ -63,7 +63,8 @@ public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdap
         }
         Glide.with(mContext)
                 .load(country.getFlagURL())
-                .apply(new RequestOptions().circleCrop())
+                .apply(new RequestOptions().placeholder(mContext.getResources().getDrawable(R.drawable.ic_photo_album)))
+                .apply(new RequestOptions().optionalCircleCrop())
                 .into(holder.mFlagImageView);
 
 
