@@ -26,14 +26,25 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
     public static final String API_LARGE_IMAGE_SIZE ="600";
     public static final String API_UNCROPPED_IMAGE_SIZE ="2048";
     public static final int DEFAULT_ALBUM_PAGE = 1;
-    public static final int ALBUM_PAGE_IMAGE_NUM = 18;
+    public static final int ALBUM_PAGE_IMAGE_NUM = 30;
 
 
     private String mCountryName;
     private int mAlbumPageNumber=DEFAULT_ALBUM_PAGE;
     ArrayList<Photo> mSavedPhotos = new ArrayList<>();
 
-    public CountryAlbumLoader(Context context,String countryName) {
+    public ArrayList<Photo> getSavedPhotos() {
+      ArrayList<Photo> photos = mSavedPhotos;
+      mSavedPhotos = null;
+      if(photos == null) Log.d(TAG, "getSavedPhotos: It's null");
+        return photos;
+       }
+
+    public void setSavedPhotos(ArrayList<Photo> savedPhotos) {
+        this.mSavedPhotos = savedPhotos;
+    }
+
+    public CountryAlbumLoader(Context context, String countryName) {
         super(context);
         this.mCountryName =  countryName;
     }
@@ -73,7 +84,6 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
     } catch (IOException e) {
         e.printStackTrace();
     } finally {
-                mSavedPhotos.addAll(photoArrayList);
                 return photoArrayList;
             }
     }

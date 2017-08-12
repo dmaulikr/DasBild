@@ -103,6 +103,10 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     }
 
+    public ArrayList<Photo> getPhotosList() {
+        return mPhotosList;
+    }
+
     @Override
     public void onBindViewHolder(RecyclerView.ViewHolder holder, int position) {
 

@@ -53,7 +53,7 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         if (savedInstanceState != null) {
             mCurrentAlbumPage = savedInstanceState.getInt("ALBUM_PAGE");
             Log.d(TAG, "onCreateView: getting the saved album number " + mCurrentAlbumPage);
-            mCountryAlbumAdapter.updatePhotosList(((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).mSavedPhotos);
+            mCountryAlbumAdapter.updatePhotosList(((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).getSavedPhotos());
             mCountryAlbumAdapter.notifyAlbumUpdates();
         }
 
@@ -124,5 +124,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState: saving the album page number");
         outState.putInt("ALBUM_PAGE", mCurrentAlbumPage);
+        ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).setSavedPhotos(mCountryAlbumAdapter.getPhotosList());
     }
 }
