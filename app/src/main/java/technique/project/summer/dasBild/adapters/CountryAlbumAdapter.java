@@ -1,7 +1,6 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.adapters;
 
 import android.content.Context;
-import android.support.v4.app.NavUtils;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -17,7 +16,9 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
+
+import technique.project.summer.dasBild.R;
+import technique.project.summer.dasBild.objectsUtils.Photo;
 
 /**
  * Created by azeddine on 31/07/17.
@@ -37,11 +38,10 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     private boolean mRecyclerViewLoadingState;
 
 
-    interface OnLoadMoreListener{
+    public interface OnLoadMoreListener{
         void onLoadMore();
     }
-
-    interface OnPhotoClickedListener {
+    public  interface OnPhotoClickedListener {
         void onPhotoClicked(Photo photo);
     }
 

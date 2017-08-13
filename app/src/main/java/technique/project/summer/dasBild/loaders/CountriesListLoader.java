@@ -1,4 +1,4 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.loaders;
 
 import android.support.v4.content.AsyncTaskLoader;
 import android.content.Context;
@@ -10,12 +10,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
-import java.net.URL;
 import java.util.ArrayList;
 
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
+import technique.project.summer.dasBild.ApiUtils;
+import technique.project.summer.dasBild.objectsUtils.Country;
 
 /**
  * Created by azeddine on 29/07/17.
@@ -43,7 +41,7 @@ public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
                 .encodedPath(REST_COUNTRY_API)
                 .appendPath(API_ENDPOINT)
                 .appendPath(REGIONAL_BLOC)
-                .encodedQuery("fields=name;alpha2Code;capital")
+                .encodedQuery("fields=name;alpha2Code;alpha3Code")
                 .build();
 
         try {
@@ -64,13 +62,13 @@ public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
 
     Country getCountryInstance(JSONObject jsonObject) throws JSONException {
         String name;
-        String code;
-        String capital;
+        String twoAlphaCode;
+        String threeAlphaCode;
 
         name = jsonObject.getString("name");
-        capital=jsonObject.getString("capital");
-        code = jsonObject.getString("alpha2Code");
-        return  new Country(name,capital,code);
+        twoAlphaCode = jsonObject.getString("alpha2Code");
+        threeAlphaCode = jsonObject.getString("alpha3Code");
+        return  new Country(name,twoAlphaCode,threeAlphaCode);
 
     }
 

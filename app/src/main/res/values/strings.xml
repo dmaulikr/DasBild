@@ -6,4 +6,17 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
 
     <string name="action_settings">Settings</string>
+
+    <string-array name="album_categories">
+        <item >Landscapes</item>
+        <item >Nature</item>
+        <item >City and Architecture</item>
+        <item>Street</item>
+        <item >People</item>
+        <item >Night </item>
+        <item >Fashion</item>
+        <item >Fine Art</item>
+        <item >Food</item>
+    </string-array>
+
 </resources>

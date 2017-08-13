@@ -1,6 +1,5 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.loaders;
 
-import android.content.AsyncTaskLoader;
 import android.content.Context;
 import android.net.Uri;
 import android.util.Log;
@@ -9,6 +8,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.io.IOException;
+
+import technique.project.summer.dasBild.ApiUtils;
+import technique.project.summer.dasBild.objectsUtils.Photo;
 
 /**
  * Created by azeddine on 10/08/17.

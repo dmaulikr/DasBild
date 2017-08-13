@@ -1,8 +1,5 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.activities;
 
-import android.net.Uri;
-import android.support.v4.app.LoaderManager;
-import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -14,10 +11,8 @@ import android.widget.TextView;
 import com.bumptech.glide.Glide;
 import com.bumptech.glide.request.RequestOptions;
 
-import org.json.JSONException;
-import org.json.JSONObject;
-
-import java.io.IOException;
+import technique.project.summer.dasBild.R;
+import technique.project.summer.dasBild.objectsUtils.Photo;
 
 public class PhotoProfileActivity extends AppCompatActivity {
     private static final String TAG = "PhotoProfileActivity";
@@ -35,7 +30,7 @@ public class PhotoProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        setContentView(R.layout.activity_photo_proile);
+        setContentView(R.layout.activity_photo_profile);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         getSupportActionBar().setTitle(null);

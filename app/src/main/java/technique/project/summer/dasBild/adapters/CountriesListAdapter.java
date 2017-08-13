@@ -1,4 +1,4 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.adapters;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
@@ -14,6 +14,9 @@ import com.bumptech.glide.request.RequestOptions;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import technique.project.summer.dasBild.R;
+import technique.project.summer.dasBild.objectsUtils.Country;
 
 /**
  * Created by azeddine on 28/07/17.
@@ -56,11 +59,7 @@ public class CountriesListAdapter extends RecyclerView.Adapter<CountriesListAdap
     public void onBindViewHolder(CountryViewHolder holder, int position) {
         Country country = getCountryByIndex(position);
         holder.view.setTag(country);
-        if(country.getName().length() > 10){
-            holder.mNameTextView.setText(country.getCode());
-        }else{
-            holder.mNameTextView.setText(country.getName());
-        }
+        holder.mNameTextView.setText(country.getThreeAlphaCode());
         Glide.with(mContext)
                 .load(country.getFlagURL())
                 .apply(new RequestOptions().optionalCircleCrop())

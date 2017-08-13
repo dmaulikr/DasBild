@@ -1,8 +1,9 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.activities;
 
 import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
+import android.support.design.widget.TabLayout;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -13,6 +14,13 @@ import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
 
+import technique.project.summer.dasBild.R;
+import technique.project.summer.dasBild.adapters.CountriesListAdapter;
+import technique.project.summer.dasBild.adapters.CountryAlbumAdapter;
+import technique.project.summer.dasBild.fragments.CountriesListFragment;
+import technique.project.summer.dasBild.fragments.CountryAlbumFragment;
+import technique.project.summer.dasBild.objectsUtils.Photo;
+
 public class MainActivity extends AppCompatActivity implements
         CountriesListAdapter.OnCountryItemClickedListener , CountryAlbumAdapter.OnPhotoClickedListener,
                                 NavigationView.OnNavigationItemSelectedListener{
@@ -22,6 +30,7 @@ public class MainActivity extends AppCompatActivity implements
     private  Toolbar mToolbar ;
     private  DrawerLayout mDrawer ;
     private  NavigationView navigationView;
+    private  TabLayout mAlbumCategoriesTabLayout;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         Log.d(TAG, "onCreate: ");
@@ -41,6 +50,13 @@ public class MainActivity extends AppCompatActivity implements
 
         navigationView = (NavigationView) findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this);
+
+        mAlbumCategoriesTabLayout = (TabLayout) findViewById(R.id.tab_layout);
+        String[] albumCategories = getResources().getStringArray(R.array.album_categories);
+        for (String category:albumCategories){
+            mAlbumCategoriesTabLayout.addTab(mAlbumCategoriesTabLayout.newTab().setText(category));
+        }
+
     }
 
     @Override

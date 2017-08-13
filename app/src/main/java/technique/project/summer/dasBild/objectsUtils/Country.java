@@ -1,4 +1,4 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.objectsUtils;
 
 import java.util.ArrayList;
 
@@ -8,27 +8,25 @@ import java.util.ArrayList;
 
 public class Country {
     private static final String FLAG_BASE_URL= "https://flagpedia.net/data/flags/normal/";
+
     private String name;
     private String capital;
     private String flagURL;
-    private String code;
+    private String twoAlphaCode;
+    private String threeAlphaCode;
     private int photosNum = 0;
     private ArrayList<Photo> photoArrayList ;
 
-    public Country(String name, String capital, String code) {
+
+
+    public Country(String name, String twoAlphaCode, String threeAlphaCode) {
         this.name = name;
-        this.capital = capital;
-        this.code = code.toLowerCase();
-        this.flagURL = FLAG_BASE_URL+this.code+".png";
+        this.twoAlphaCode = twoAlphaCode.toLowerCase();
+        this.flagURL = FLAG_BASE_URL+ this.twoAlphaCode +".png";
+        this.threeAlphaCode =threeAlphaCode;
     }
 
-    public Country(String name, String capital, String code, int photosNum) {
-        this.name = name;
-        this.capital = capital;
-        this.photosNum = photosNum;
-        this.code = code.toLowerCase();
-        this.flagURL = FLAG_BASE_URL+this.code+".png";
-    }
+
 
 
     public String getName() {
@@ -63,6 +61,14 @@ public class Country {
         this.photosNum = photosNum;
     }
 
+    public String getThreeAlphaCode() {
+        return threeAlphaCode;
+    }
+
+    public void setThreeAlphaCode(String threeAlphaCode) {
+        this.threeAlphaCode = threeAlphaCode;
+    }
+
     public ArrayList<Photo> getPhotoArrayList() {
         return photoArrayList;
     }
@@ -71,11 +77,11 @@ public class Country {
         this.photoArrayList = photoArrayList;
     }
 
-    public String getCode() {
-        return code;
+    public String getTwoAlphaCode() {
+        return twoAlphaCode;
     }
 
-    public void setCode(String code) {
-        this.code = code;
+    public void setTwoAlphaCode(String twoAlphaCode) {
+        this.twoAlphaCode = twoAlphaCode;
     }
 }

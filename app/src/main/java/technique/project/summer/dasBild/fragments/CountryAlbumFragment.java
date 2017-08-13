@@ -1,4 +1,4 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.fragments;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
@@ -13,6 +13,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+
+import technique.project.summer.dasBild.ApiUtils;
+import technique.project.summer.dasBild.R;
+import technique.project.summer.dasBild.adapters.CountryAlbumAdapter;
+import technique.project.summer.dasBild.loaders.CountryAlbumLoader;
+import technique.project.summer.dasBild.objectsUtils.Photo;
 
 /**
  * Created by azeddine on 31/07/17.
@@ -124,6 +130,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState: saving the album page number");
         outState.putInt("ALBUM_PAGE", mCurrentAlbumPage);
-        ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).setSavedPhotos(mCountryAlbumAdapter.getPhotosList());
+        if(mCountryAlbumAdapter.getPhotosList().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).setSavedPhotos(mCountryAlbumAdapter.getPhotosList());
     }
 }

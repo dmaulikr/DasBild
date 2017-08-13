@@ -1,4 +1,4 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.objectsUtils;
 
 import java.io.Serializable;
 

@@ -4,15 +4,9 @@
     android:layout_height="match_parent"
     android:background="@android:color/white"
     android:orientation="vertical">
-
-
         <android.support.v7.widget.RecyclerView
             android:id="@+id/countries_list"
             android:layout_width="match_parent"
-            android:elevation="2dp"
             android:layout_height="match_parent"
             />
-
-
-
 </RelativeLayout>

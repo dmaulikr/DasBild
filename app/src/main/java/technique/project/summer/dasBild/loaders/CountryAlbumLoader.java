@@ -1,4 +1,4 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.loaders;
 
 import android.content.Context;
 import android.net.Uri;
@@ -11,7 +11,9 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.List;
+
+import technique.project.summer.dasBild.ApiUtils;
+import technique.project.summer.dasBild.objectsUtils.Photo;
 
 /**
  * Created by azeddine on 31/07/17.

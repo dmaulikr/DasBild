@@ -1,4 +1,4 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild;
 
 import android.content.Context;
 import android.net.ConnectivityManager;

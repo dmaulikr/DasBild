@@ -1,9 +1,6 @@
-package technique.project.summer.arabicSnap;
+package technique.project.summer.dasBild.fragments;
 
-import android.content.Context;
 import android.content.res.Configuration;
-import android.net.ConnectivityManager;
-import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -17,6 +14,12 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
+
+import technique.project.summer.dasBild.ApiUtils;
+import technique.project.summer.dasBild.R;
+import technique.project.summer.dasBild.adapters.CountriesListAdapter;
+import technique.project.summer.dasBild.loaders.CountriesListLoader;
+import technique.project.summer.dasBild.objectsUtils.Country;
 
 /**
  * Created by azeddine on 28/07/17.
