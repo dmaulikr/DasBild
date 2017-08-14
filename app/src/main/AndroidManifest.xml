@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="technique.project.summer.dasBild">
+    package="azeddine.project.summer.dasBild">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -12,7 +12,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true">
         <activity
-               android:name="technique.project.summer.dasBild.activities.MainActivity"
+               android:name="azeddine.project.summer.dasBild.activities.MainActivity"
                android:theme="@style/AppTheme.NoActionBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -21,7 +21,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name="technique.project.summer.dasBild.activities.PhotoProfileActivity"
+            android:name="azeddine.project.summer.dasBild.activities.PhotoProfileActivity"
             android:theme="@style/AppTheme.NoActionBar" />
     </application>
 

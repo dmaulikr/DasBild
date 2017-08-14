@@ -3,9 +3,10 @@
     android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
-    <ImageView
+    <azeddine.project.summer.dasBild.costumComponents.GridItem
         android:id="@+id/album_item"
         android:padding="1dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
+
 </RelativeLayout>

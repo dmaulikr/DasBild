@@ -6,7 +6,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="technique.project.summer.dasBild.activities.MainActivity">
+    tools:context="azeddine.project.summer.dasBild.activities.MainActivity">
     <FrameLayout
         android:id="@+id/fragment_country_album_container"
         android:layout_width="match_parent"
