@@ -18,6 +18,7 @@ import technique.project.summer.dasBild.ApiUtils;
 import technique.project.summer.dasBild.R;
 import technique.project.summer.dasBild.adapters.CountryAlbumAdapter;
 import technique.project.summer.dasBild.loaders.CountryAlbumLoader;
+import technique.project.summer.dasBild.objectsUtils.Album;
 import technique.project.summer.dasBild.objectsUtils.Photo;
 
 /**
@@ -25,14 +26,17 @@ import technique.project.summer.dasBild.objectsUtils.Photo;
  */
 
 public class CountryAlbumFragment extends Fragment implements LoaderManager.LoaderCallbacks<Object> {
+
     public static final String TAG = "CountryAlbumFragment";
     public static final String ALBUM_NAME_KEY = "ALBUM_NAME_KEY";
+    public static final String CATEGORY_NAME_KEY = "CATEGORY_NAME_KEY";
     public static final int ALBUM_LOADER = 1;
 
 
     private RecyclerView mAlbumRecyclerView;
     private CountryAlbumAdapter mCountryAlbumAdapter;
     private String mAlbumName;
+    private String mCategoryName;
     private int mCurrentAlbumPage = CountryAlbumLoader.DEFAULT_ALBUM_PAGE;
 
 
@@ -51,21 +55,28 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onLoadMore() {
                 mCurrentAlbumPage++;
-                Log.d(TAG, "onLoadMore: loading the album page number " + mCurrentAlbumPage);
                 ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).forceLoad(mCurrentAlbumPage);
             }
         });
 
         if (savedInstanceState != null) {
+            Log.d(TAG, "onCreateView: restoring the state");
             mCurrentAlbumPage = savedInstanceState.getInt("ALBUM_PAGE");
-            Log.d(TAG, "onCreateView: getting the saved album number " + mCurrentAlbumPage);
-            mCountryAlbumAdapter.updatePhotosList(((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).getSavedPhotos());
-            mCountryAlbumAdapter.notifyAlbumUpdates();
+            mCountryAlbumAdapter.updatePhotos(((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).getSavedPhotos());
+            mAlbumRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    Log.d(TAG, "run: notify the data change");
+                    mCountryAlbumAdapter.notifyPhotosUpdates();
+
+                }
+            });
         }
 
         return view;
 
     }
+
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -81,7 +92,9 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
             mAlbumRecyclerView.setAdapter(mCountryAlbumAdapter);
 
             mAlbumName = getArguments().getString(ALBUM_NAME_KEY);
+            mCategoryName = getArguments().getString(CATEGORY_NAME_KEY);
             mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
+
             getLoaderManager().initLoader(ALBUM_LOADER, null, CountryAlbumFragment.this);
 
         } else {
@@ -94,24 +107,24 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         Log.d(TAG, "onCreateLoader: ");
         switch (id) {
             case ALBUM_LOADER:
-                return new CountryAlbumLoader(getContext(), mAlbumName);
+                return new CountryAlbumLoader(getContext(), mAlbumName,mCategoryName);
             default:
                 return null;
         }
     }
 
     @Override
-    public void onLoadFinished(final Loader<Object> loader, Object data) {
+    public void onLoadFinished(Loader<Object> loader,Object album ) {
         Log.d(TAG, "onLoadFinished: ");
         if (loader.getId() == ALBUM_LOADER) {
                 mCountryAlbumAdapter.setRecyclerViewLoadingState(false);
-                if(data != null){
-                    mCountryAlbumAdapter.updatePhotosList(((ArrayList<Photo>) data));
+                if(album != null){
+                    mCountryAlbumAdapter.updatePhotos((ArrayList<Photo>) album);
                     mAlbumRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
                             Log.d(TAG, "run: notify the data change");
-                            mCountryAlbumAdapter.notifyAlbumUpdates();
+                            mCountryAlbumAdapter.notifyPhotosUpdates();
 
                         }
                     });
@@ -130,6 +143,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState: saving the album page number");
         outState.putInt("ALBUM_PAGE", mCurrentAlbumPage);
-        if(mCountryAlbumAdapter.getPhotosList().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).setSavedPhotos(mCountryAlbumAdapter.getPhotosList());
+        if(mCountryAlbumAdapter.getPhotos().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).setSavedPhotos(mCountryAlbumAdapter.getPhotos());
     }
 }
