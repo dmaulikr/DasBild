@@ -76,4 +76,5 @@ public class Photo implements Serializable{
     public void setCroppedPhotoUrl(String croppedPhotoUrl) {
         this.croppedPhotoUrl = croppedPhotoUrl;
     }
+
 }

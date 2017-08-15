@@ -1,6 +1,7 @@
 package azeddine.project.summer.dasBild.objectsUtils;
 
 import java.util.ArrayList;
+import java.util.Collections;
 
 /**
  * Created by azeddine on 28/07/17.
@@ -25,7 +26,9 @@ public class Country {
         this.flagURL = FLAG_BASE_URL+ this.twoAlphaCode +".png";
         this.threeAlphaCode =threeAlphaCode;
     }
-
+    public Country(String name){
+        setName(name);
+    }
 
 
 
@@ -83,5 +86,13 @@ public class Country {
 
     public void setTwoAlphaCode(String twoAlphaCode) {
         this.twoAlphaCode = twoAlphaCode;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof Country){
+            return this.getName().equalsIgnoreCase(((Country) obj).getName());
+        }else return false;
+
     }
 }

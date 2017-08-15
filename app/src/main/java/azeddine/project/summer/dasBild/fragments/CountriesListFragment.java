@@ -31,7 +31,7 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
 
     private RecyclerView mCountriesRecyclerView;
     private CountriesListAdapter mCountriesListAdapter;
-
+    private String  mFocusedCountryName ;
 
     public CountriesListFragment() {
     }
@@ -41,7 +41,6 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onCreateView: ");
         View view =  inflater.inflate(R.layout.fragment_countries_list,container,false);
-
         mCountriesRecyclerView =  view.findViewById(R.id.countries_list);
         return view;
     }
@@ -49,21 +48,23 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
+
         mCountriesListAdapter = new CountriesListAdapter(getContext());
         int orientation = this.getResources().getConfiguration().orientation;
         mCountriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),(orientation == Configuration.ORIENTATION_PORTRAIT)?0:1,false));
         mCountriesRecyclerView.setAdapter(mCountriesListAdapter);
     }
 
+
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated: ");
         super.onActivityCreated(savedInstanceState);
-        if(ApiUtils.isOnline(getContext())){
-            getLoaderManager().initLoader(COUNTRIES_LIST_LOADER,null,this);
-        }else{
-            mCountriesRecyclerView.setVisibility(View.GONE);
-        }
+            if(savedInstanceState!= null) {
+                mFocusedCountryName = savedInstanceState.getString(CountryAlbumFragment.ALBUM_NAME_KEY);
+            }
+
+                getLoaderManager().initLoader(COUNTRIES_LIST_LOADER,null,this);
 
     }
 
@@ -77,20 +78,26 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
                 return null;
         }
     }
-
     @Override
     public void onLoadFinished(Loader<ArrayList<Country>> loader, ArrayList<Country> data) {
         Log.d(TAG, "onLoadFinished: ");
-        mCountriesListAdapter.setCountriesList(data);
+        mCountriesListAdapter.setCountriesList(data,mFocusedCountryName);
 
 
     }
-
     @Override
     public void onLoaderReset(Loader<ArrayList<Country>> loader) {
         Log.d(TAG, "onLoaderReset: ");
 
     }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState:");
+        super.onSaveInstanceState(outState);
+        outState.putString(CountryAlbumFragment.ALBUM_NAME_KEY,mCountriesListAdapter.getmFocusedCountryName());
+    }
+
 
 
 }

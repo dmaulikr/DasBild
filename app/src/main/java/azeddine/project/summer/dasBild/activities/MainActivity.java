@@ -29,7 +29,6 @@ public class MainActivity extends AppCompatActivity implements
                                 NavigationView.OnNavigationItemSelectedListener,TabLayout.OnTabSelectedListener{
 
     private static final String TAG = "MainActivity";
-    public static final String CURRENT_CATEGORY_KEY ="CURRENT_CATEGORY";
     public static final String DEFAULT_COUNTRY = "Algeria";
     public static final String DEFAULT_CATEGORY = "Landscapes";
 
@@ -70,8 +69,9 @@ public class MainActivity extends AppCompatActivity implements
             mAlbumCategoriesTabLayout.addTab(mAlbumCategoriesTabLayout.newTab().setText(category));
         }
         if(savedInstanceState !=null) {
-            currentCategory = savedInstanceState.getString(CURRENT_CATEGORY_KEY);
-            Log.d(TAG, "onCreate: it is "+currentCategory);
+            currentCategory = savedInstanceState.getString(CountryAlbumFragment.CATEGORY_NAME_KEY);
+            currentCountry = savedInstanceState.getString(CountryAlbumFragment.ALBUM_NAME_KEY);
+
             mAlbumCategoriesTabLayout.getTabAt(albumCategories.indexOf(currentCategory)).select();
         }
         mAlbumCategoriesTabLayout.addOnTabSelectedListener(this);
@@ -93,7 +93,7 @@ public class MainActivity extends AppCompatActivity implements
     protected void onStart() {
         Log.d(TAG, "onStart: ");
         super.onStart();
-
+        Bundle args;
         FragmentManager fm = getSupportFragmentManager();
 
         if(fm.findFragmentByTag(CountriesListFragment.TAG) == null){
@@ -104,7 +104,7 @@ public class MainActivity extends AppCompatActivity implements
 
 
         if(fm.findFragmentByTag(CountryAlbumFragment.TAG) == null){
-            Bundle args = new Bundle();
+            args = new Bundle();
             args.putString(CountryAlbumFragment.ALBUM_NAME_KEY,DEFAULT_COUNTRY);
             args.putString(CountryAlbumFragment.CATEGORY_NAME_KEY,DEFAULT_CATEGORY);
 
@@ -155,7 +155,8 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        outState.putString(CURRENT_CATEGORY_KEY,currentCategory);
+        outState.putString(CountryAlbumFragment.CATEGORY_NAME_KEY,currentCategory);
+        outState.putString(CountryAlbumFragment.ALBUM_NAME_KEY,currentCountry);
     }
 
     @Override

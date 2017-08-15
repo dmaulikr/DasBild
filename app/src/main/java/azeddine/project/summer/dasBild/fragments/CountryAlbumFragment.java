@@ -60,17 +60,20 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         });
 
         if (savedInstanceState != null) {
-            Log.d(TAG, "onCreateView: restoring the state");
             mCurrentAlbumPage = savedInstanceState.getInt("ALBUM_PAGE");
-            mCountryAlbumAdapter.updatePhotos(((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).getSavedPhotos());
-            mAlbumRecyclerView.post(new Runnable() {
-                @Override
-                public void run() {
-                    Log.d(TAG, "run: notify the data change 1");
-                    mCountryAlbumAdapter.notifyPhotosUpdates();
+            CountryAlbumLoader loader = ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER));
+            if(loader != null){
+                mCountryAlbumAdapter.updatePhotos(((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).getSavedPhotos());
+                mAlbumRecyclerView.post(new Runnable() {
+                    @Override
+                    public void run() {
+                        Log.d(TAG, "run: notify the data change");
+                        mCountryAlbumAdapter.notifyPhotosUpdates();
 
-                }
-            });
+                    }
+                });
+            }
+
         }
 
         return view;
