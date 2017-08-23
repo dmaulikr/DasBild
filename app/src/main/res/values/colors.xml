@@ -8,4 +8,6 @@
     <color name="darker_white">#fafafa</color>
     <color name="dark_gray">#A0A0A0</color>
     <color name="blue_light">#33b5e5</color>
+
+    <color name="colorPrimary_low_opacity">#CCFF5722</color>
 </resources>

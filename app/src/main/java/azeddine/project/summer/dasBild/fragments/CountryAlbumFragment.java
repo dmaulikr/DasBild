@@ -19,6 +19,7 @@ import azeddine.project.summer.dasBild.R;
 import azeddine.project.summer.dasBild.adapters.CountryAlbumAdapter;
 import azeddine.project.summer.dasBild.costumComponents.WrapContentGridLayoutManager;
 import azeddine.project.summer.dasBild.loaders.CountryAlbumLoader;
+import azeddine.project.summer.dasBild.objectsUtils.KeysUtil;
 import azeddine.project.summer.dasBild.objectsUtils.Photo;
 
 /**
@@ -28,15 +29,15 @@ import azeddine.project.summer.dasBild.objectsUtils.Photo;
 public class CountryAlbumFragment extends Fragment implements LoaderManager.LoaderCallbacks<Object> {
 
     public static final String TAG = "CountryAlbumFragment";
-    public static final String ALBUM_NAME_KEY = "ALBUM_NAME_KEY";
-    public static final String CATEGORY_NAME_KEY = "CATEGORY_NAME_KEY";
     public static final int ALBUM_LOADER = 1;
 
 
     private RecyclerView mAlbumRecyclerView;
     private CountryAlbumAdapter mCountryAlbumAdapter;
+
     private String mAlbumName;
     private String mCategoryName;
+
     private int mCurrentAlbumPage = CountryAlbumLoader.DEFAULT_ALBUM_PAGE;
 
 
@@ -94,8 +95,8 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         if (ApiUtils.isOnline(getContext())) {
             mAlbumRecyclerView.setAdapter(mCountryAlbumAdapter);
 
-            mAlbumName = getArguments().getString(ALBUM_NAME_KEY);
-            mCategoryName = getArguments().getString(CATEGORY_NAME_KEY);
+            mAlbumName = getArguments().getString(KeysUtil.ALBUM_NAME_KEY);
+            mCategoryName = getArguments().getString(KeysUtil.CATEGORY_NAME_KEY);
             mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
 
             getLoaderManager().initLoader(ALBUM_LOADER, null, CountryAlbumFragment.this);

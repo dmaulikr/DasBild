@@ -11,8 +11,10 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 
 import azeddine.project.summer.dasBild.ApiUtils;
+import azeddine.project.summer.dasBild.R;
 import azeddine.project.summer.dasBild.objectsUtils.Country;
 
 /**
@@ -21,12 +23,37 @@ import azeddine.project.summer.dasBild.objectsUtils.Country;
 
 public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
     private static final String TAG = "CountriesListLoader";
-    private static final String REST_COUNTRY_API= "https://restcountries.eu/rest/v2";
-    private static final String API_ENDPOINT= "regionalbloc";
-    private static final String REGIONAL_BLOC= "al";
+    private static final String REST_COUNTRY_API_V2= "https://restcountries.eu/rest/v2";
+    private static final String REST_COUNTRY_API_V1= "https://restcountries.eu/rest/v1";
+    private static final String API_ENDPOINT_REGION_BLOC= "regionalbloc";
+    private static final String API_ENDPOINT_REGION= "region";
 
-    public CountriesListLoader(Context context) {
+    private String regionKey;
+
+    public CountriesListLoader(Context context,String regionName) {
         super(context);
+        Log.d(TAG, "CountriesListLoader: "+regionName);
+        int i = Arrays.asList(context.getResources().getStringArray(R.array.regions_search_names)).indexOf(regionName);
+        regionKey = context.getResources().getStringArray(R.array.regions_keys)[i];
+        Log.d(TAG, "CountriesListLoader: "+regionKey);
+    }
+    public String getApiStartPoint(String s){
+        String region  = s.toLowerCase();
+        switch(region){
+            case "asia":
+                return  REST_COUNTRY_API_V1;
+            default:
+                return REST_COUNTRY_API_V2;
+        }
+    }
+    public String getApiEndPoint(String s){
+        String region  = s.toLowerCase();
+        switch(region){
+            case "asia":
+                return API_ENDPOINT_REGION;
+            default:
+                return API_ENDPOINT_REGION_BLOC;
+        }
     }
 
     @Override
@@ -37,26 +64,28 @@ public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
         ArrayList<Country> countryArrayList= new ArrayList<>();
         Log.d(TAG, "loadInBackground: ");
 
-        Uri  url = new Uri.Builder()
-                .encodedPath(REST_COUNTRY_API)
-                .appendPath(API_ENDPOINT)
-                .appendPath(REGIONAL_BLOC)
-                .encodedQuery("fields=name;alpha2Code;alpha3Code")
-                .build();
+            Uri  url = new Uri.Builder()
+                    .encodedPath(getApiStartPoint(regionKey))
+                    .appendPath(getApiEndPoint(regionKey))
+                    .appendPath(regionKey)
+                    .encodedQuery("fields=name;alpha2Code;alpha3Code")
+                    .build();
+            try {
+                Log.d(TAG, "loadInBackground: "+url);
+                responseBodyString =  ApiUtils.run(url);
+                countriesJsonArray = new JSONArray(responseBodyString);
 
-        try {
-            responseBodyString =  ApiUtils.run(url);
-            countriesJsonArray = new JSONArray(responseBodyString);
-
-            for (int i=0;i<countriesJsonArray.length();i++){
-                countryJsonObject = countriesJsonArray.getJSONObject(i);
-                countryArrayList.add(getCountryInstance(countryJsonObject));
+                for (int i=0;i<countriesJsonArray.length();i++){
+                    countryJsonObject = countriesJsonArray.getJSONObject(i);
+                    if(!countryJsonObject.getString("name").equalsIgnoreCase("israel"))  countryArrayList.add(getCountryInstance(countryJsonObject));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (JSONException e) {
+                e.printStackTrace();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
-        } finally {
-            return countryArrayList;
-        }
+        return  countryArrayList;
+
 
     }
 

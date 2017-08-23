@@ -1,6 +1,7 @@
 package azeddine.project.summer.dasBild.adapters;
 
 import android.content.Context;
+import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -31,6 +32,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     private Context mContext;
     private ArrayList<Photo> photos = new ArrayList<>();
+
     private OnLoadMoreListener mLoadMoreListener;
     static private OnPhotoClickedListener mOnPhotoClickedListener;
 
@@ -42,7 +44,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         void onLoadMore();
     }
     public  interface OnPhotoClickedListener {
-        void onPhotoClicked(Photo photo);
+        void onPhotoClicked(Photo photo,ImageView sharedImageView);
     }
 
     public CountryAlbumAdapter(Context context,RecyclerView recyclerView) {
@@ -114,6 +116,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if(holder instanceof PhotoViewHolder){
             Photo photo = photos.get(position);
             ((PhotoViewHolder) holder).mView.setTag(photo);
+            ViewCompat.setTransitionName( ((PhotoViewHolder) holder).mPhoto, photo.getId());
             Glide.with(mContext)
                     .load(photo.getCroppedPhotoUrl())
                     .apply(new RequestOptions().placeholder(mContext.getResources().getDrawable(R.drawable.ic_image)))
@@ -137,9 +140,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     public void notifyPhotosUpdates(){
         Log.d(TAG, "notifyPhotosUpdates: before");
         int i = getItemCount() - 1 ;
-       // notifyItemInserted(photos.size()-1);
         notifyItemRangeInserted(i,photos.size()-1);
-        Log.d(TAG, "notifyPhotosUpdates: after ");
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener listener){
@@ -181,11 +182,10 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public void onClick(View view) {
             Log.d(TAG, "onClick: ");
             Photo photo = (Photo) view.getTag();
-            mOnPhotoClickedListener.onPhotoClicked(photo);
+            mOnPhotoClickedListener.onPhotoClicked(photo,(ImageView) view.findViewById(R.id.album_item));
 
         }
     }
-
     private static class LoadingProgressViewHolder extends  RecyclerView.ViewHolder{
         private ProgressBar mProgressBar;
         private LoadingProgressViewHolder(View itemView) {

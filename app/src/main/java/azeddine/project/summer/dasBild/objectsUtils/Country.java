@@ -21,7 +21,7 @@ public class Country {
 
 
     public Country(String name, String twoAlphaCode, String threeAlphaCode) {
-        this.name = name;
+        this.name = name.split("\\(")[0];
         this.twoAlphaCode = twoAlphaCode.toLowerCase();
         this.flagURL = FLAG_BASE_URL+ this.twoAlphaCode +".png";
         this.threeAlphaCode =threeAlphaCode;
@@ -29,8 +29,6 @@ public class Country {
     public Country(String name){
         setName(name);
     }
-
-
 
     public String getName() {
         return name;
