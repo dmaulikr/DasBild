@@ -1,5 +1,7 @@
 package azeddine.project.summer.dasBild.objectsUtils;
 
+import android.support.annotation.Nullable;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -8,22 +10,21 @@ import java.util.Collections;
  */
 
 public class Country {
-    private static final String FLAG_BASE_URL= "https://flagpedia.net/data/flags/normal/";
+
 
     private String name;
     private String capital;
     private String flagURL;
     private String twoAlphaCode;
     private String threeAlphaCode;
-    private int photosNum = 0;
     private ArrayList<Photo> photoArrayList ;
 
 
 
-    public Country(String name, String twoAlphaCode, String threeAlphaCode) {
-        this.name = name.split("\\(")[0];
+    public Country(String name, String twoAlphaCode, String threeAlphaCode,@Nullable String url){
+        this.name = name;
         this.twoAlphaCode = twoAlphaCode.toLowerCase();
-        this.flagURL = FLAG_BASE_URL+ this.twoAlphaCode +".png";
+        this.flagURL = url ;
         this.threeAlphaCode =threeAlphaCode;
     }
     public Country(String name){
@@ -54,13 +55,6 @@ public class Country {
         this.flagURL = flagURL;
     }
 
-    public int getPhotosNum() {
-        return photosNum;
-    }
-
-    public void setPhotosNum(int photosNum) {
-        this.photosNum = photosNum;
-    }
 
     public String getThreeAlphaCode() {
         return threeAlphaCode;

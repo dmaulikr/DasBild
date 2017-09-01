@@ -1,6 +1,7 @@
 package azeddine.project.summer.dasBild.adapters;
 
 import android.content.Context;
+import android.os.Build;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
@@ -44,7 +45,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         void onLoadMore();
     }
     public  interface OnPhotoClickedListener {
-        void onPhotoClicked(Photo photo,ImageView sharedImageView);
+        void onPhotoClicked(Photo photo);
     }
 
     public CountryAlbumAdapter(Context context,RecyclerView recyclerView) {
@@ -116,10 +117,10 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         if(holder instanceof PhotoViewHolder){
             Photo photo = photos.get(position);
             ((PhotoViewHolder) holder).mView.setTag(photo);
-            ViewCompat.setTransitionName( ((PhotoViewHolder) holder).mPhoto, photo.getId());
             Glide.with(mContext)
                     .load(photo.getCroppedPhotoUrl())
                     .apply(new RequestOptions().placeholder(mContext.getResources().getDrawable(R.drawable.ic_image)))
+                    .apply(new RequestOptions().error(R.drawable.ic_terrain_))
                     .apply(new RequestOptions().centerCrop())
                     .into(( (PhotoViewHolder) holder).mPhoto);
         }
@@ -182,7 +183,7 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         public void onClick(View view) {
             Log.d(TAG, "onClick: ");
             Photo photo = (Photo) view.getTag();
-            mOnPhotoClickedListener.onPhotoClicked(photo,(ImageView) view.findViewById(R.id.album_item));
+            mOnPhotoClickedListener.onPhotoClicked(photo);
 
         }
     }

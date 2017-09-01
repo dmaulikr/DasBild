@@ -25,8 +25,8 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
 
     public static final String PHOTO_API_BASE_URL = "https://api.500px.com/v1/photos";
     public static final String API_CONSUMER_KEY = "8rESAvR28TpJTguNMbEabYUkDRBXK2ldh2H6Ypy0";
-    public static final String API_LARGE_IMAGE_SIZE = "200";
-    public static final String API_UNCROPPED_IMAGE_SIZE = "2048";
+    public static final String API_CROPPED_IMAGE_SIZE = "200";
+    public static final String API_UNCROPPED_IMAGE_SIZE = "1080";
 
     public static final int DEFAULT_ALBUM_PAGE = 1;
     public static final int ALBUM_PAGE_IMAGE_NUM = 30;
@@ -67,7 +67,7 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
         Uri url = new Uri.Builder()
                 .encodedPath(PHOTO_API_BASE_URL)
                 .appendPath("search")
-                .encodedQuery("image_size=" + API_LARGE_IMAGE_SIZE + "," + API_UNCROPPED_IMAGE_SIZE)
+                .encodedQuery("image_size=" + API_CROPPED_IMAGE_SIZE + "," + API_UNCROPPED_IMAGE_SIZE)
                 .appendQueryParameter("term", mCountryName)
                 .appendQueryParameter("only", mCategoryName)
                 .appendQueryParameter("exclude", "Nude")
@@ -120,6 +120,7 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
         photo.setCroppedPhotoUrl(jsonObject.getJSONArray("images").getJSONObject(0).getString("url"));
         photo.setUnCroppedPhotoUrl(jsonObject.getJSONArray("images").getJSONObject(1).getString("url"));
         photo.setDescription(jsonObject.getString("description"));
+        photo.setTitle(jsonObject.getString("name"));
         photo.setPhotographerImageUrl(jsonObject.getJSONObject("user").getString("userpic_url"));
         photo.setPhotographerUsername(jsonObject.getJSONObject("user").getString("fullname"));
 

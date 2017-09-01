@@ -25,6 +25,7 @@ public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
     private static final String TAG = "CountriesListLoader";
     private static final String REST_COUNTRY_API_V2= "https://restcountries.eu/rest/v2";
     private static final String REST_COUNTRY_API_V1= "https://restcountries.eu/rest/v1";
+    private static final String FLAG_BASE_URL= "https://flagpedia.net/data/flags/normal/";
     private static final String API_ENDPOINT_REGION_BLOC= "regionalbloc";
     private static final String API_ENDPOINT_REGION= "region";
 
@@ -94,10 +95,11 @@ public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
         String twoAlphaCode;
         String threeAlphaCode;
 
-        name = jsonObject.getString("name");
+        name = jsonObject.getString("name").split("\\(")[0].split(",")[0];
         twoAlphaCode = jsonObject.getString("alpha2Code");
         threeAlphaCode = jsonObject.getString("alpha3Code");
-        return  new Country(name,twoAlphaCode,threeAlphaCode);
+        String flagUrl = FLAG_BASE_URL+ twoAlphaCode.toLowerCase() +".png";
+        return  new Country(name,twoAlphaCode,threeAlphaCode,flagUrl);
 
     }
 

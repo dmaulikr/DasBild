@@ -22,7 +22,11 @@ public class ApiUtils {
                 .url(url.toString())
                 .build();
         Response response = client.newCall(request).execute();
+        if(response.isSuccessful()){
         return response.body().string();
+        }else {
+            return null;
+        }
     }
     public static boolean isOnline(Context context){
         ConnectivityManager cm = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);

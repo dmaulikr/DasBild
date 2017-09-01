@@ -146,7 +146,8 @@ public class CountriesListAdapter extends RecyclerView.Adapter<RecyclerView.View
                 position = 0;
 
             mFocusedCountry = countriesList.get(position);
-            this.mCountries.addAll(countriesList);
+            mCountries.clear();
+            mCountries.addAll(countriesList);
             notifyDataSetChanged();
         }
     }

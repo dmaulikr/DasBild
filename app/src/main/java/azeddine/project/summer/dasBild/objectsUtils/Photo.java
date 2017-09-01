@@ -9,6 +9,7 @@ import java.io.Serializable;
 public class Photo implements Serializable{
     private  String id;
     private String description;
+    private String title;
     private String croppedPhotoUrl;
     private String unCroppedPhotoUrl;
     private String photographerUsername;
@@ -22,7 +23,6 @@ public class Photo implements Serializable{
         this.id = ID;
         this.croppedPhotoUrl = url;
     }
-
     public Photo(String ID, String description, String url) {
         this.id = ID;
         this.description = description;
@@ -77,4 +77,11 @@ public class Photo implements Serializable{
         this.croppedPhotoUrl = croppedPhotoUrl;
     }
 
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
 }

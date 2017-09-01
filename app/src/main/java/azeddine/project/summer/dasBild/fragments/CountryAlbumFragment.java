@@ -29,7 +29,6 @@ import azeddine.project.summer.dasBild.objectsUtils.Photo;
 public class CountryAlbumFragment extends Fragment implements LoaderManager.LoaderCallbacks<Object> {
 
     public static final String TAG = "CountryAlbumFragment";
-    public static final int ALBUM_LOADER = 1;
 
 
     private RecyclerView mAlbumRecyclerView;
@@ -56,15 +55,15 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onLoadMore() {
                 mCurrentAlbumPage++;
-                ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).forceLoad(mCurrentAlbumPage);
+                ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).forceLoad(mCurrentAlbumPage);
             }
         });
 
         if (savedInstanceState != null) {
             mCurrentAlbumPage = savedInstanceState.getInt("ALBUM_PAGE");
-            CountryAlbumLoader loader = ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER));
+            CountryAlbumLoader loader = ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID));
             if(loader != null){
-                mCountryAlbumAdapter.updatePhotos(((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).getSavedPhotos());
+                mCountryAlbumAdapter.updatePhotos(((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).getSavedPhotos());
                 mAlbumRecyclerView.post(new Runnable() {
                     @Override
                     public void run() {
@@ -99,7 +98,7 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
             mCategoryName = getArguments().getString(KeysUtil.CATEGORY_NAME_KEY);
             mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
 
-            getLoaderManager().initLoader(ALBUM_LOADER, null, CountryAlbumFragment.this);
+            getLoaderManager().initLoader(KeysUtil.ALBUM_LOADER_ID, null, CountryAlbumFragment.this);
 
         } else {
             // display empty album
@@ -110,7 +109,7 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
     public Loader<Object> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "onCreateLoader: ");
         switch (id) {
-            case ALBUM_LOADER:
+            case KeysUtil.ALBUM_LOADER_ID:
                 return new CountryAlbumLoader(getContext(), mAlbumName,mCategoryName);
             default:
                 return null;
@@ -120,7 +119,7 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
     @Override
     public void onLoadFinished(Loader<Object> loader,Object album ) {
         Log.d(TAG, "onLoadFinished: ");
-        if (loader.getId() == ALBUM_LOADER) {
+        if (loader.getId() == KeysUtil.ALBUM_LOADER_ID) {
                 mCountryAlbumAdapter.setRecyclerViewLoadingState(false);
                 if(album != null){
                     mCountryAlbumAdapter.updatePhotos((ArrayList<Photo>) album);
@@ -147,6 +146,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         super.onSaveInstanceState(outState);
         Log.d(TAG, "onSaveInstanceState: saving the album page number");
         outState.putInt("ALBUM_PAGE", mCurrentAlbumPage);
-        if(mCountryAlbumAdapter.getPhotos().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(ALBUM_LOADER)).setSavedPhotos(mCountryAlbumAdapter.getPhotos());
+        if(mCountryAlbumAdapter.getPhotos().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).setSavedPhotos(mCountryAlbumAdapter.getPhotos());
     }
 }
