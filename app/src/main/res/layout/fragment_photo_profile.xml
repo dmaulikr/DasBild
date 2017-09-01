@@ -75,6 +75,15 @@
                 style="@style/TextAppearance.AppCompat.Title"
                 android:textColor="@android:color/holo_blue_light" />
             <android.support.v7.widget.AppCompatTextView
+                android:id="@+id/photo_taken_date"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:gravity="center"
+                android:layout_marginTop="4dp"
+                android:paddingStart="8dp"
+                android:paddingEnd="8dp"
+                style="@style/Base.TextAppearance.AppCompat.Small" />
+            <android.support.v7.widget.AppCompatTextView
                 android:id="@+id/photo_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -82,7 +91,6 @@
                 android:layout_marginTop="8dp"
                 android:paddingStart="8dp"
                 android:paddingEnd="8dp"
-                android:autoSizeTextType="uniform"
                 style="@style/Base.TextAppearance.AppCompat.Display1" />
 
         </LinearLayout>

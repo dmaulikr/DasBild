@@ -1,6 +1,7 @@
 package azeddine.project.summer.dasBild.fragments;
 
 import android.annotation.SuppressLint;
+import android.graphics.Interpolator;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
@@ -38,6 +39,9 @@ import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
 import java.nio.channels.FileLock;
 import java.security.PrivilegedAction;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import azeddine.project.summer.dasBild.R;
 import azeddine.project.summer.dasBild.objectsUtils.Photo;
@@ -54,6 +58,7 @@ public class PhotoProfileFragment extends Fragment {
     private ImageView mPhotoImageView;
     private AppCompatTextView mPhotographerNameTextView;
     private AppCompatTextView  mPhotoTitle;
+    private AppCompatTextView mPhotoDate;
     private ImageView mPhotographerProfileImage;
     private ProgressBar mProgressBar;
     private ImageView mExpendIconImageView;
@@ -74,6 +79,7 @@ public class PhotoProfileFragment extends Fragment {
         mPhotoImageView =  view.findViewById(R.id.photo);
         mPhotographerProfileImage = view.findViewById(R.id.photographer_profile_image);
         mPhotoTitle = view.findViewById(R.id.photo_title);
+        mPhotoDate = view.findViewById(R.id.photo_taken_date);
         mPhotographerNameTextView = view.findViewById(R.id.photographer_name);
         mProgressBar = view.findViewById(R.id.load_more_progress_bar);
         mSlidingPaneLayout =view.findViewById(R.id.sliding_layout);
@@ -95,22 +101,27 @@ public class PhotoProfileFragment extends Fragment {
 
         activity.setSupportActionBar((Toolbar) view.findViewById(R.id.toolbar));
         final ActionBar  actionBar = activity.getSupportActionBar();
-        actionBar.setDisplayHomeAsUpEnabled(true);
-        actionBar.setTitle(null);
-        actionBar.setShowHideAnimationEnabled(true);
+        if (actionBar != null) {
+            actionBar.setDisplayHomeAsUpEnabled(true);
+            actionBar.setTitle(null);
+            actionBar.setShowHideAnimationEnabled(true);
+        }
+
 
         mPhotoImageView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                    if (!mSlidingPaneLayout.getPanelState().equals(SlidingUpPanelLayout.PanelState.EXPANDED)){
-                        if(actionBar.isShowing()){
-                            mSlidingPaneLayout.setTouchEnabled(false);
-                            mDragView.setSoundEffectsEnabled(false);
-                            hideForegroundLayout(actionBar,mDragView);
+                    if (mSlidingPaneLayout.getPanelState()== SlidingUpPanelLayout.PanelState.EXPANDED){
+                       mSlidingPaneLayout.setPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
+                    }else {
+                        if(actionBar != null && actionBar.isShowing()){
+                                mSlidingPaneLayout.setTouchEnabled(false);
+                                mDragView.setSoundEffectsEnabled(false);
+                                hideForegroundLayout(actionBar,mDragView);
                         }else{
-                            mSlidingPaneLayout.setTouchEnabled(true);
-                            mDragView.setSoundEffectsEnabled(true);
-                            showForegroundLayout(actionBar,mDragView);
+                                mSlidingPaneLayout.setTouchEnabled(true);
+                                mDragView.setSoundEffectsEnabled(true);
+                                showForegroundLayout(actionBar,mDragView);
                         }
                     }
             }
@@ -124,35 +135,49 @@ public class PhotoProfileFragment extends Fragment {
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         Photo photo = (Photo) getArguments().getSerializable("Photo");
+        if (photo != null) {
 
-        Glide.with(this)
-                .load(photo.getUnCroppedPhotoUrl())
-                .apply(new RequestOptions().error(R.drawable.ic_terrain_))
-                .listener(new RequestListener<Drawable>() {
-                    @Override
-                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                        mProgressBar.setVisibility(View.GONE);
-                        return false;
-                    }
+            Glide.with(this)
+                    .load(photo.getUnCroppedPhotoUrl())
+                    .apply(new RequestOptions().error(R.drawable.ic_terrain_))
+                    .listener(new RequestListener<Drawable>() {
+                        @Override
+                        public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
+                            mProgressBar.setVisibility(View.GONE);
+                            return false;
+                        }
 
-                    @Override
-                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                        mProgressBar.setVisibility(View.GONE);
-                        return false;
-                    }
-                })
-                .into(mPhotoImageView);
+                        @Override
+                        public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                            mProgressBar.setVisibility(View.GONE);
+                            return false;
+                        }
+                    })
+                    .into(mPhotoImageView);
 
-        Glide.with(this)
-                .load(photo.getPhotographerImageUrl())
-                .apply(new RequestOptions().circleCrop())
-                .into(mPhotographerProfileImage);
+            Glide.with(this)
+                    .load(photo.getPhotographerImageUrl())
+                    .apply(new RequestOptions().circleCrop())
+                    .into(mPhotographerProfileImage);
 
-        mPhotographerNameTextView.setText(photo.getPhotographerUsername());
-        String text = photo.getTitle();
-        if(text != null) mPhotoTitle.setText(text);
-
-                  
+            String text = photo.getPhotographerUsername();
+            if (text != null) mPhotographerNameTextView.setText(text);
+            text = photo.getTitle();
+            if (text != null) mPhotoTitle.setText(text);
+            text = photo.getDateString();
+            if (text != null) {
+                SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
+                try {
+                    Date date = simpleDateFormat.parse(text);
+                    simpleDateFormat.applyPattern("MMMMMMMM yyyy");
+                    mPhotoDate.setText(simpleDateFormat.format(date));
+                } catch (ParseException e) {
+                    e.printStackTrace();
+                }
+            }else {
+                mPhotoDate.setVisibility(View.GONE);
+            }
+        }
     }
 
 
@@ -189,16 +214,6 @@ public class PhotoProfileFragment extends Fragment {
 
             }
         });
-    }
-
-    @Override
-    public void onResume() {
-        super.onResume();
-    }
-
-    @Override
-    public void onPause() {
-        super.onPause();
     }
 
     @Override
@@ -243,7 +258,7 @@ public class PhotoProfileFragment extends Fragment {
         enterAnimation.setDuration(350);
         enterAnimation.setInterpolator(AnimationUtils.loadInterpolator(
                 getContext(),
-                android.R.interpolator.linear
+                android.R.interpolator.accelerate_decelerate
         ));
         enterAnimation.setAnimationListener(listener);
         panel.startAnimation(enterAnimation);

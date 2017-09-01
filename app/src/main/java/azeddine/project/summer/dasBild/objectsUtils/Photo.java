@@ -6,23 +6,26 @@ import java.io.Serializable;
  * Created by azeddine on 28/07/17.
  */
 
-public class Photo implements Serializable{
-    private  String id;
+public class Photo implements Serializable {
+    private String id;
     private String description;
     private String title;
     private String croppedPhotoUrl;
     private String unCroppedPhotoUrl;
     private String photographerUsername;
     private String photographerImageUrl;
+    private String dateString;
 
 
     public Photo() {
 
     }
+
     public Photo(String ID, String url) {
         this.id = ID;
         this.croppedPhotoUrl = url;
     }
+
     public Photo(String ID, String description, String url) {
         this.id = ID;
         this.description = description;
@@ -83,5 +86,13 @@ public class Photo implements Serializable{
 
     public void setTitle(String title) {
         this.title = title;
+    }
+
+    public String getDateString() {
+        return dateString;
+    }
+
+    public void setDateString(String dateString) {
+        this.dateString = dateString;
     }
 }

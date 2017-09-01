@@ -37,12 +37,7 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
     private int mAlbumPageNumber = DEFAULT_ALBUM_PAGE;
     private ArrayList<Photo> mSavedPhotos;
 
-    public ArrayList<Photo> getSavedPhotos() {
-        return mSavedPhotos;
-    }
-    public void setSavedPhotos(ArrayList<Photo> savedPhotos) {
-        this.mSavedPhotos = savedPhotos;
-    }
+
 
     public CountryAlbumLoader(Context context, String countryName, String categoryName) {
         super(context);
@@ -76,7 +71,6 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
                 .appendQueryParameter("sort", "created_at")
                 .appendQueryParameter("consumer_key", API_CONSUMER_KEY)
                 .build();
-        Log.d(TAG, "loadInBackground: the url is " + url);
 
         try {
             responseBodyString = ApiUtils.run(url);
@@ -95,23 +89,18 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
         return photoArrayList;
     }
 
-    @Override
-    public void deliverResult(Object photos) {
-        Log.d(TAG, "deliverResult: ");
-        super.deliverResult(photos);
-    }
-
-    @Override
-    protected void onReset() {
-        super.onReset();
-        Log.d(TAG, "onReset: ");
-    }
-
-
     public void forceLoad(int pageNumber) {
         Log.d(TAG, "forceLoad: ");
         mAlbumPageNumber = pageNumber;
         super.onForceLoad();
+    }
+
+    public ArrayList<Photo> getSavedPhotos() {
+        return mSavedPhotos;
+    }
+
+    public void setSavedPhotos(ArrayList<Photo> savedPhotos) {
+        this.mSavedPhotos = savedPhotos;
     }
 
     private Photo getPhotoInstance(JSONObject jsonObject) throws JSONException {
@@ -123,11 +112,14 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
         photo.setTitle(jsonObject.getString("name"));
         photo.setPhotographerImageUrl(jsonObject.getJSONObject("user").getString("userpic_url"));
         photo.setPhotographerUsername(jsonObject.getJSONObject("user").getString("fullname"));
+        photo.setDateString(jsonObject.getString("taken_at").equals("null") ? jsonObject.getString("created_at") : jsonObject.getString("taken_at"));
 
 
         return photo;
 
     }
+
+
 
 
 }

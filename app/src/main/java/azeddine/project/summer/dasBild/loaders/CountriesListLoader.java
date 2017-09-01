@@ -72,7 +72,6 @@ public class CountriesListLoader extends AsyncTaskLoader<ArrayList<Country>>{
                     .encodedQuery("fields=name;alpha2Code;alpha3Code")
                     .build();
             try {
-                Log.d(TAG, "loadInBackground: "+url);
                 responseBodyString =  ApiUtils.run(url);
                 countriesJsonArray = new JSONArray(responseBodyString);
 
