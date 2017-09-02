@@ -10,5 +10,5 @@
     <color name="blue_light">#33b5e5</color>
 
     <color name="colorPrimary_low_opacity">#CCFF5722</color>
-    <color name="black_low_opacity">#af000000</color>
+    <color name="black_low_opacity">#32000000</color>
 </resources>

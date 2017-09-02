@@ -16,6 +16,7 @@ import android.view.ViewGroup;
 import java.util.ArrayList;
 
 import azeddine.project.summer.dasBild.R;
+import azeddine.project.summer.dasBild.activities.MainActivity;
 import azeddine.project.summer.dasBild.adapters.CountriesListAdapter;
 import azeddine.project.summer.dasBild.loaders.CountriesListLoader;
 import azeddine.project.summer.dasBild.objectsUtils.Country;
@@ -27,7 +28,6 @@ import azeddine.project.summer.dasBild.objectsUtils.KeysUtil;
 
 public class CountriesListFragment extends Fragment implements LoaderManager.LoaderCallbacks<ArrayList<Country>> {
     public static final String TAG = "CountriesListFragment";
-
 
     private RecyclerView mCountriesRecyclerView;
     private CountriesListAdapter mCountriesListAdapter;
@@ -49,9 +49,10 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         Log.d(TAG, "onViewCreated: ");
-        int orientation = this.getResources().getConfiguration().orientation;
         mCountriesListAdapter = new CountriesListAdapter(getContext());
-        mCountriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),(orientation == Configuration.ORIENTATION_PORTRAIT)?0:1,false));
+        int scrollOrientation = ((MainActivity)getContext()).getCountriesListScrollOrientation();
+        mCountriesRecyclerView.setLayoutManager(new LinearLayoutManager(getContext(),scrollOrientation,false));
+        mCountriesRecyclerView.getItemAnimator().setChangeDuration(0);
         mCountriesRecyclerView.setAdapter(mCountriesListAdapter);
     }
 

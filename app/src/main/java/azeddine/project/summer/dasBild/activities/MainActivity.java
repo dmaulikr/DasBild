@@ -1,35 +1,20 @@
 package azeddine.project.summer.dasBild.activities;
 
-import android.annotation.SuppressLint;
-import android.content.Intent;
-import android.graphics.Color;
-import android.os.Build;
-import android.support.annotation.ColorRes;
+import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
-import android.support.v4.app.ActivityOptionsCompat;
 import android.support.v4.app.DialogFragment;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
-import android.transition.Slide;
-import android.transition.TransitionInflater;
 import android.util.Log;
-import android.view.Gravity;
-import android.view.Menu;
 import android.view.MenuItem;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -48,17 +33,14 @@ import azeddine.project.summer.dasBild.objectsUtils.KeysUtil;
 import azeddine.project.summer.dasBild.objectsUtils.Photo;
 
 public class MainActivity extends AppCompatActivity implements
-        CountriesListAdapter.OnCountryItemClickedListener , CountriesListAdapter.OnCountryItemLongClickedListener,
-        CountryAlbumAdapter.OnPhotoClickedListener, NavigationView.OnNavigationItemSelectedListener,TabLayout.OnTabSelectedListener{
+        CountriesListAdapter.OnCountryItemClickedListener, CountriesListAdapter.OnCountryItemLongClickedListener,
+        CountryAlbumAdapter.OnPhotoClickedListener, NavigationView.OnNavigationItemSelectedListener, TabLayout.OnTabSelectedListener {
 
     private static final String TAG = "MainActivity";
     public static final String DEFAULT_REGION_NAME = "Arab world";
     public static final String DEFAULT_CATEGORY = "Landscapes";
 
-    private  Toolbar mToolbar ;
-    private  DrawerLayout mDrawer ;
-    private  NavigationView mNavigationView;
-    private  TabLayout mAlbumCategoriesTabLayout;
+    private DrawerLayout mDrawer;
 
     private String currentCountryName;
     private String currentCategoryName = DEFAULT_CATEGORY;
@@ -72,36 +54,34 @@ public class MainActivity extends AppCompatActivity implements
         setContentView(R.layout.activity_main);
 
 
-        mToolbar = findViewById(R.id.toolbar);
+        Toolbar mToolbar = findViewById(R.id.toolbar);
         setSupportActionBar(mToolbar);
 
-        mDrawer =  findViewById(R.id.drawer_layout);
+        mDrawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         mDrawer.addDrawerListener(toggle);
         mDrawer.setStatusBarBackground(R.color.colorPrimaryDark);
         toggle.syncState();
 
-        mNavigationView = findViewById(R.id.nav_view);
+        NavigationView mNavigationView = findViewById(R.id.nav_view);
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.setCheckedItem(R.id.arab_region);
 
-        mAlbumCategoriesTabLayout =  findViewById(R.id.tab_layout);
-        ArrayList<String> albumCategories = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.albums_categories)) );
-        for (String category:albumCategories){
+        TabLayout mAlbumCategoriesTabLayout = findViewById(R.id.tab_layout);
+        ArrayList<String> albumCategories = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.albums_categories)));
+        for (String category : albumCategories) {
             mAlbumCategoriesTabLayout.addTab(mAlbumCategoriesTabLayout.newTab().setText(category));
         }
         mAlbumCategoriesTabLayout.addOnTabSelectedListener(this);
 
-        if(savedInstanceState !=null) {
+        if (savedInstanceState != null) {
             currentCategoryName = savedInstanceState.getString(KeysUtil.CATEGORY_NAME_KEY);
             currentCountryName = savedInstanceState.getString(KeysUtil.ALBUM_NAME_KEY);
             currentRegionName = savedInstanceState.getString(KeysUtil.REGION_NAME_KEY);
 
             mAlbumCategoriesTabLayout.getTabAt(albumCategories.indexOf(currentCategoryName)).select();
         }
-
-
 
     }
 
@@ -110,14 +90,14 @@ public class MainActivity extends AppCompatActivity implements
         Log.d(TAG, "onBackPressed: ");
 
         PhotoProfileFragment fm = (PhotoProfileFragment) getSupportFragmentManager().findFragmentByTag(PhotoProfileFragment.TAG);
-        if(fm != null){
-            if (fm.isSlidingPanelOpen()){
+        if (fm != null) {
+            if (fm.isSlidingPanelOpen()) {
                 fm.setSlidingPanelState(SlidingUpPanelLayout.PanelState.COLLAPSED);
                 return;
             } else {
                 mDrawer.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED);
             }
-        }else {
+        } else {
             if (mDrawer.isDrawerOpen(GravityCompat.START)) {
                 mDrawer.closeDrawer(GravityCompat.START);
                 return;
@@ -131,12 +111,23 @@ public class MainActivity extends AppCompatActivity implements
         super.onStart();
         FragmentManager fm = getSupportFragmentManager();
 
-        if(fm.findFragmentByTag(CountriesListFragment.TAG) == null) startCountriesListFragment(DEFAULT_REGION_NAME);
-        if(fm.findFragmentByTag(CountryAlbumFragment.TAG) == null) startAlbumFragment(DEFAULT_REGION_NAME,DEFAULT_CATEGORY);
+        if (fm.findFragmentByTag(CountriesListFragment.TAG) == null)
+            startCountriesListFragment(DEFAULT_REGION_NAME);
+        if (fm.findFragmentByTag(CountryAlbumFragment.TAG) == null)
+            startAlbumFragment(DEFAULT_REGION_NAME, DEFAULT_CATEGORY);
 
 
     }
 
+    @Override
+    public void onCountryLongClicked(Country country, ImageView sharedImageView) {
+        DialogFragment fragment = new CountryDetailsDialogFragment();
+        Bundle args = new Bundle();
+        args.putString(KeysUtil.COUNTRY_NAME_KEY, country.getName());
+        args.putString(KeysUtil.COUNTRY_FLAG_URL_KEY, country.getFlagURL());
+        fragment.setArguments(args);
+        fragment.show(getSupportFragmentManager(), "bd");
+    }
 
     @Override
     public void onCountryClicked(String countryName) {
@@ -152,14 +143,14 @@ public class MainActivity extends AppCompatActivity implements
 
 
         Bundle args = new Bundle();
-        args.putSerializable("Photo",photo);
+        args.putSerializable("Photo", photo);
 
         PhotoProfileFragment photoProfileFragment = new PhotoProfileFragment();
         photoProfileFragment.setArguments(args);
         getSupportFragmentManager()
                 .beginTransaction()
                 .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
-                .replace(R.id.drawer_layout,photoProfileFragment,PhotoProfileFragment.TAG)
+                .replace(R.id.drawer_layout, photoProfileFragment, PhotoProfileFragment.TAG)
                 .addToBackStack(null)
                 .commit();
 
@@ -167,11 +158,11 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-        final int groupId= item.getGroupId();
+        final int groupId = item.getGroupId();
         int id = item.getItemId();
-        String selectedRegionTitle ;
-        if(groupId == R.id.regions){
-            switch (id){
+        String selectedRegionTitle;
+        if (groupId == R.id.regions) {
+            switch (id) {
                 case R.id.arab_region:
                     selectedRegionTitle = getResources().getStringArray(R.array.regions_search_names)[0];
                     break;
@@ -193,11 +184,11 @@ public class MainActivity extends AppCompatActivity implements
                 default:
                     selectedRegionTitle = getResources().getStringArray(R.array.regions_search_names)[0];
             }
-            if(!selectedRegionTitle.equalsIgnoreCase(currentRegionName)){
+            if (!selectedRegionTitle.equalsIgnoreCase(currentRegionName)) {
                 currentRegionName = selectedRegionTitle;
                 currentCountryName = currentRegionName;
                 startCountriesListFragment(selectedRegionTitle);
-                startAlbumFragment(selectedRegionTitle,currentCategoryName);
+                startAlbumFragment(selectedRegionTitle, currentCategoryName);
             }
         }
         mDrawer.closeDrawer(GravityCompat.START);
@@ -222,51 +213,12 @@ public class MainActivity extends AppCompatActivity implements
 
     @Override
     public void onTabUnselected(TabLayout.Tab tab) {
-        Log.d(TAG, "onTabUnselected: ");
     }
 
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
-        Log.d(TAG, "onTabReselected: ");
     }
 
-    private void startAlbumFragment(String name,String category){
-        Log.d(TAG, "startAlbumFragment: ");
-        Bundle args = new Bundle();
-        args.putString(KeysUtil.ALBUM_NAME_KEY,name);
-        args.putString(KeysUtil.CATEGORY_NAME_KEY,category);
-
-        CountryAlbumFragment countryAlbumFragment= new CountryAlbumFragment();
-        countryAlbumFragment.setArguments(args);
-
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_country_album_container,countryAlbumFragment,CountryAlbumFragment.TAG)
-                .commit();
-    }
-
-    private void startCountriesListFragment(String region){
-        Log.d(TAG, "startCountriesListFragment: ");
-        Bundle args = new Bundle();
-        args.putString(KeysUtil.REGION_NAME_KEY,region);
-        CountriesListFragment countriesListFragment = new CountriesListFragment();
-        countriesListFragment.setArguments(args);
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_countries_list_container,countriesListFragment,CountriesListFragment.TAG)
-                .commit();
-    }
-
-
-
-
-    @Override
-    public void onCountryLongClicked(Country country, ImageView sharedImageView) {
-        DialogFragment fragment = new CountryDetailsDialogFragment();
-        Bundle args = new Bundle();
-        args.putString(KeysUtil.COUNTRY_NAME_KEY,country.getName());
-        args.putString(KeysUtil.COUNTRY_FLAG_URL_KEY,country.getFlagURL());
-        fragment.setArguments(args);
-        fragment.show(getSupportFragmentManager(),"bd");
-    }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -277,5 +229,37 @@ public class MainActivity extends AppCompatActivity implements
                 return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void startAlbumFragment(String name, String category) {
+        Log.d(TAG, "startAlbumFragment: ");
+
+        Bundle args = new Bundle();
+        args.putString(KeysUtil.ALBUM_NAME_KEY, name);
+        args.putString(KeysUtil.CATEGORY_NAME_KEY, category);
+
+        CountryAlbumFragment countryAlbumFragment = new CountryAlbumFragment();
+        countryAlbumFragment.setArguments(args);
+
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_country_album_container, countryAlbumFragment, CountryAlbumFragment.TAG)
+                .commit();
+    }
+
+    private void startCountriesListFragment(String region) {
+        Log.d(TAG, "startCountriesListFragment: ");
+        Bundle args = new Bundle();
+        args.putString(KeysUtil.REGION_NAME_KEY, region);
+        CountriesListFragment countriesListFragment = new CountriesListFragment();
+        countriesListFragment.setArguments(args);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_countries_list_container, countriesListFragment, CountriesListFragment.TAG)
+                .commit();
+    }
+
+    public int getCountriesListScrollOrientation() {
+        return findViewById(R.id.app_bar_layout).findViewById(R.id.fragment_countries_list_container) == null ? 1 :0;
+
+
     }
 }

@@ -3,7 +3,6 @@ package azeddine.project.summer.dasBild.loaders;
 import android.content.Context;
 import android.net.Uri;
 import android.support.v4.content.AsyncTaskLoader;
-import android.util.Log;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -23,20 +22,19 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
 
     private static final String TAG = "CountryAlbumLoader";
 
-    public static final String PHOTO_API_BASE_URL = "https://api.500px.com/v1/photos";
-    public static final String API_CONSUMER_KEY = "8rESAvR28TpJTguNMbEabYUkDRBXK2ldh2H6Ypy0";
-    public static final String API_CROPPED_IMAGE_SIZE = "200";
-    public static final String API_UNCROPPED_IMAGE_SIZE = "1080";
+    private static final String PHOTO_API_BASE_URL = "https://api.500px.com/v1/photos";
+    private static final String API_CONSUMER_KEY = "8rESAvR28TpJTguNMbEabYUkDRBXK2ldh2H6Ypy0";
+    private static final String API_CROPPED_IMAGE_SIZE = "200";
+    private static final String API_UNCROPPED_IMAGE_SIZE = "1080";
 
+    private static final int ALBUM_PAGE_IMAGE_NUM = 30;
     public static final int DEFAULT_ALBUM_PAGE = 1;
-    public static final int ALBUM_PAGE_IMAGE_NUM = 30;
 
 
     private String mCountryName;
     private String mCategoryName;
     private int mAlbumPageNumber = DEFAULT_ALBUM_PAGE;
     private ArrayList<Photo> mSavedPhotos;
-
 
 
     public CountryAlbumLoader(Context context, String countryName, String categoryName) {
@@ -54,7 +52,7 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
 
     @Override
     public ArrayList<Photo> loadInBackground() {
-        Log.d(TAG, "loadInBackground: ");
+
         String responseBodyString;
         JSONArray photosJsonArray;
         ArrayList<Photo> photoArrayList = new ArrayList<>();
@@ -90,7 +88,6 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
     }
 
     public void forceLoad(int pageNumber) {
-        Log.d(TAG, "forceLoad: ");
         mAlbumPageNumber = pageNumber;
         super.onForceLoad();
     }
@@ -118,8 +115,6 @@ public class CountryAlbumLoader extends AsyncTaskLoader<Object> {
         return photo;
 
     }
-
-
 
 
 }

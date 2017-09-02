@@ -5,7 +5,6 @@ import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
-import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -27,29 +26,24 @@ import azeddine.project.summer.dasBild.objectsUtils.Photo;
  */
 
 public class CountryAlbumFragment extends Fragment implements LoaderManager.LoaderCallbacks<Object> {
-
     public static final String TAG = "CountryAlbumFragment";
-
 
     private RecyclerView mAlbumRecyclerView;
     private CountryAlbumAdapter mCountryAlbumAdapter;
-
     private String mAlbumName;
     private String mCategoryName;
-
     private int mCurrentAlbumPage = CountryAlbumLoader.DEFAULT_ALBUM_PAGE;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_counrty_album, container, false);
-
         mAlbumRecyclerView = view.findViewById(R.id.country_album);
-        mAlbumRecyclerView.setLayoutManager(new WrapContentGridLayoutManager(getContext(), 3));
 
-        mCountryAlbumAdapter = new CountryAlbumAdapter(getContext(), mAlbumRecyclerView);
+        mAlbumRecyclerView.setLayoutManager(new WrapContentGridLayoutManager(getContext(), 3));
+        mCountryAlbumAdapter = new CountryAlbumAdapter(getContext(), mAlbumRecyclerView,3);
+
         mCountryAlbumAdapter.setOnPhotoClickedListener((CountryAlbumAdapter.OnPhotoClickedListener) getContext());
         mCountryAlbumAdapter.setOnLoadMoreListener(new CountryAlbumAdapter.OnLoadMoreListener() {
             @Override
@@ -67,7 +61,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
                 mAlbumRecyclerView.post(new Runnable() {
                     @Override
                     public void run() {
-                        Log.d(TAG, "run: notify the data change");
                         mCountryAlbumAdapter.notifyPhotosUpdates();
 
                     }
@@ -75,34 +68,23 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
             }
 
         }
-
         return view;
 
-    }
-
-
-    @Override
-    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onViewCreated: ");
-        super.onViewCreated(view, savedInstanceState);
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated: ");
         super.onActivityCreated(savedInstanceState);
-        if (ApiUtils.isOnline(getContext())) {
-            mAlbumRecyclerView.setAdapter(mCountryAlbumAdapter);
 
-            mAlbumName = getArguments().getString(KeysUtil.ALBUM_NAME_KEY);
-            mCategoryName = getArguments().getString(KeysUtil.CATEGORY_NAME_KEY);
-            mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
+        mAlbumRecyclerView.setAdapter(mCountryAlbumAdapter);
 
-            getLoaderManager().initLoader(KeysUtil.ALBUM_LOADER_ID, null, CountryAlbumFragment.this);
+        mAlbumName = getArguments().getString(KeysUtil.ALBUM_NAME_KEY);
+        mCategoryName = getArguments().getString(KeysUtil.CATEGORY_NAME_KEY);
+        mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
 
-        } else {
-            // display empty album
-        }
+        getLoaderManager().initLoader(KeysUtil.ALBUM_LOADER_ID, null, CountryAlbumFragment.this);
+
     }
 
     @Override
@@ -110,7 +92,7 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         Log.d(TAG, "onCreateLoader: ");
         switch (id) {
             case KeysUtil.ALBUM_LOADER_ID:
-                return new CountryAlbumLoader(getContext(), mAlbumName,mCategoryName);
+                return new CountryAlbumLoader(getContext(),mAlbumName,mCategoryName);
             default:
                 return null;
         }
@@ -126,7 +108,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
                     mAlbumRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
-                            Log.d(TAG, "run: notify the data change 2");
                             mCountryAlbumAdapter.notifyPhotosUpdates();
 
                         }
@@ -138,13 +119,13 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
 
     @Override
     public void onLoaderReset(Loader<Object> loader) {
-        Log.d(TAG, "onLoaderReset: ");
+
     }
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        Log.d(TAG, "onSaveInstanceState: saving the album page number");
+
         outState.putInt("ALBUM_PAGE", mCurrentAlbumPage);
         if(mCountryAlbumAdapter.getPhotos().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).setSavedPhotos(mCountryAlbumAdapter.getPhotos());
     }
