@@ -129,4 +129,8 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
         outState.putInt("ALBUM_PAGE", mCurrentAlbumPage);
         if(mCountryAlbumAdapter.getPhotos().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).setSavedPhotos(mCountryAlbumAdapter.getPhotos());
     }
+
+    public void resetAlbumScroll(){
+        mAlbumRecyclerView.smoothScrollToPosition(0);
+    }
 }

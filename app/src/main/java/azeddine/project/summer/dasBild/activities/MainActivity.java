@@ -5,6 +5,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.DialogFragment;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
@@ -14,7 +15,9 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.sothree.slidinguppanel.SlidingUpPanelLayout;
 
@@ -55,8 +58,16 @@ public class MainActivity extends AppCompatActivity implements
 
 
         Toolbar mToolbar = findViewById(R.id.toolbar);
-        setSupportActionBar(mToolbar);
+        mToolbar.findViewById(R.id.toolbar_title).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Fragment fm = getSupportFragmentManager().findFragmentByTag(CountryAlbumFragment.TAG);
+                if (fm != null) ((CountryAlbumFragment)fm).resetAlbumScroll();
 
+            }
+        });
+        setSupportActionBar(mToolbar);
+        getSupportActionBar().setTitle(null);
         mDrawer = findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, mDrawer, mToolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);

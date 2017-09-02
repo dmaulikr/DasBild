@@ -8,6 +8,7 @@
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
     tools:context="azeddine.project.summer.dasBild.activities.MainActivity">
     <FrameLayout
+        android:background="@color/darker_white"
         android:id="@+id/fragment_country_album_container"
         android:layout_width="match_parent"
         android:layout_weight="1"
