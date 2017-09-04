@@ -36,10 +36,21 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
 
     public CountriesListFragment() {}
 
+
+    @Override
+    public void onCreate(@Nullable Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        Log.d(TAG, "onCreate: ");
+        if(savedInstanceState != null) {
+            mFocusedCountryName = savedInstanceState.getString(KeysUtil.ALBUM_NAME_KEY);
+            Log.d(TAG, "there are items saved");
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        Log.d(TAG, "onCreateView: ");
+        Log.d(TAG, "onCreateView:");
         View view =  inflater.inflate(R.layout.fragment_countries_list,container,false);
         mCountriesRecyclerView =  view.findViewById(R.id.countries_list);
         return view;
@@ -60,11 +71,6 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         Log.d(TAG, "onActivityCreated: ");
         super.onActivityCreated(savedInstanceState);
-            if(savedInstanceState!= null) {
-                mFocusedCountryName = savedInstanceState.getString(KeysUtil.ALBUM_NAME_KEY);
-                Log.d(TAG, "there are items saved");
-            }
-            Log.d(TAG, "onActivityCreated: the focused country is "+mFocusedCountryName);
             mRegionName = getArguments().getString(KeysUtil.REGION_NAME_KEY);
             Bundle args = new Bundle();
             args.putString(KeysUtil.REGION_NAME_KEY, mRegionName);
@@ -72,6 +78,13 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
 
     }
 
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        Log.d(TAG, "onSaveInstanceState: focused country "+mCountriesListAdapter.getFocusedCountryName());
+        super.onSaveInstanceState(outState);
+        outState.putString(KeysUtil.ALBUM_NAME_KEY,mCountriesListAdapter.getFocusedCountryName());
+    }
+    
     @Override
     public Loader<ArrayList<Country>> onCreateLoader(int id, Bundle args) {
         Log.d(TAG, "onCreateLoader: ");
@@ -89,7 +102,6 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
             Country regionCountries = new Country(mRegionName,"ALL","ALL",null);
             if(data != null) {
                 if(!data.contains(regionCountries)) data.add(0,regionCountries);
-                  Log.d(TAG, "onLoadFinished:  the focused country is "+mFocusedCountryName);
                   mCountriesListAdapter.setCountriesList(data,mFocusedCountryName);
             }
         }
@@ -103,13 +115,7 @@ public class CountriesListFragment extends Fragment implements LoaderManager.Loa
 
     }
 
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        Log.d(TAG, "onSaveInstanceState: focused country "+mCountriesListAdapter.getFocusedCountryName());
-        super.onSaveInstanceState(outState);
-        outState.putString(KeysUtil.ALBUM_NAME_KEY,mCountriesListAdapter.getFocusedCountryName());
+    public void setFocusedCountryName(String mFocusedCountryName) {
+        this.mFocusedCountryName = mFocusedCountryName;
     }
-
-
-
 }

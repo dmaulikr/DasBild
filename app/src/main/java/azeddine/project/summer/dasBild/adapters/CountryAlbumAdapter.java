@@ -37,13 +37,12 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     static private OnPhotoClickedListener mOnPhotoClickedListener;
 
     private RecyclerView mRecyclerView;
-    private boolean mRecyclerViewLoadingState;
+    private boolean mAdapterViewLoadingState;
 
 
     public interface OnLoadMoreListener {
         void onLoadMore();
     }
-
     public interface OnPhotoClickedListener {
         void onPhotoClicked(Photo photo);
     }
@@ -52,17 +51,19 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
         this.mContext = context;
         this.mRecyclerView = recyclerView;
         mAlbumColumnsNumber = albumColumnsNumber;
-        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+        mRecyclerView.addOnScrollListener(new RecyclerView.OnScrollListener() {
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+
                 LinearLayoutManager layoutManger = (LinearLayoutManager) recyclerView.getLayoutManager();
                 int itemsNumber = layoutManger.getItemCount();
                 int lastVisibleItemPosition = layoutManger.findLastCompletelyVisibleItemPosition();
+
                 if (dy > 0) {
                     if (itemsNumber <= lastVisibleItemPosition + 6 && !isLoading()) {
                         mLoadMoreListener.onLoadMore();
-                        setRecyclerViewLoadingState(true);
+                        setAdapterLoadingState(true);
                     }
                 }
             }
@@ -133,20 +134,21 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
 
     public void updatePhotos(ArrayList<Photo> photosList) {
         if (photosList != null) {
-            if (photos.containsAll(photosList)) return;
-            else photos.addAll(photosList);
+            if (!photos.containsAll(photosList)) {
+                photos.addAll(photosList);
+            }
         }
 
     }
 
     public void notifyPhotosUpdates() {
-        Log.d(TAG, "notifyPhotosUpdates: before");
         int i = getItemCount() - 1;
         notifyItemRangeInserted(i, photos.size() - 1);
+        notifyDataSetChanged();
     }
 
     public void setOnLoadMoreListener(OnLoadMoreListener listener) {
-        this.mLoadMoreListener = listener;
+       mLoadMoreListener = listener;
     }
 
     public void setOnPhotoClickedListener(OnPhotoClickedListener listener) {
@@ -154,21 +156,32 @@ public class CountryAlbumAdapter extends RecyclerView.Adapter<RecyclerView.ViewH
     }
 
     public boolean isLoading() {
-        return mRecyclerViewLoadingState;
+        return mAdapterViewLoadingState;
     }
 
-    public void setRecyclerViewLoadingState(boolean recyclerViewLoadingState) {
-        this.mRecyclerViewLoadingState = recyclerViewLoadingState;
-        Log.d(TAG, "setRecyclerViewLoadingState: ");
-        if (mRecyclerViewLoadingState) {
+    public void setAdapterLoadingState(boolean recyclerViewLoadingState) {
+        this.mAdapterViewLoadingState = recyclerViewLoadingState;
+        Log.d(TAG, "setAdapterLoadingState: ");
+        if (mAdapterViewLoadingState) {
             photos.add(null);
-            notifyItemInserted(photos.size() - 1);
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemInserted(photos.size() - 1);
+                    notifyDataSetChanged();
+                }
+            });
         } else {
             photos.remove(photos.size() - 1);
-            notifyItemRemoved(photos.size());
+            mRecyclerView.post(new Runnable() {
+                @Override
+                public void run() {
+                    notifyItemRemoved(photos.size());
+                    notifyDataSetChanged();
+                }
+            });
         }
     }
-
 
     private static class PhotoViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private ImageView mPhoto;

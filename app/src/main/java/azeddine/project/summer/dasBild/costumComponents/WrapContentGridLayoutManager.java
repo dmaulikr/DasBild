@@ -27,8 +27,8 @@ public class WrapContentGridLayoutManager extends GridLayoutManager{
     public void onLayoutChildren(RecyclerView.Recycler recycler, RecyclerView.State state) {
         try {
             super.onLayoutChildren(recycler, state);
-        } catch (IndexOutOfBoundsException e) {
-            Log.e("probe", "meet a IOOBE in RecyclerView");
-        }
+       } catch (IndexOutOfBoundsException e) {
+            e.printStackTrace();
+       }
     }
 }

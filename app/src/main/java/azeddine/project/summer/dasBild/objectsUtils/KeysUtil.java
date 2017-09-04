@@ -9,6 +9,7 @@ public class KeysUtil {
     //saved states keys
     public static final String REGION_NAME_KEY ="REGION_NAME_KEY";
     public static final String ALBUM_NAME_KEY = "ALBUM_NAME_KEY";
+    public static final String ALBUM_PAGE_NUMBER_KEY="ALBUM_PAGE_NUMBER_KEY";
     public static final String CATEGORY_NAME_KEY = "CATEGORY_NAME_KEY";
     public static final String COUNTRY_NAME_KEY = "COUNTRY_NAME_KEY";
     public static final String COUNTRY_FLAG_URL_KEY = "COUNTRY_FLAG_URL_KEY";

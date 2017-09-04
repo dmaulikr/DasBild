@@ -95,4 +95,13 @@ public class Photo implements Serializable {
     public void setDateString(String dateString) {
         this.dateString = dateString;
     }
+
+    @Override
+    public boolean equals(Object obj) {
+        if(obj instanceof  Photo){
+            Photo p = (Photo) obj;
+            return  p.getId().equals(id);
+        }else return  false;
+
+        }
 }

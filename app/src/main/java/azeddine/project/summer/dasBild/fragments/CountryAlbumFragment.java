@@ -38,6 +38,7 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onCreateView: ");
         View view = inflater.inflate(R.layout.fragment_counrty_album, container, false);
         mAlbumRecyclerView = view.findViewById(R.id.country_album);
 
@@ -49,12 +50,21 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
             @Override
             public void onLoadMore() {
                 mCurrentAlbumPage++;
+                Log.d(TAG, "onLoadMore: load page number "+mCurrentAlbumPage);
                 ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).forceLoad(mCurrentAlbumPage);
             }
         });
+        
+        return view;
 
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        Log.d(TAG, "onViewCreated: ");
+        super.onViewCreated(view, savedInstanceState);
         if (savedInstanceState != null) {
-            mCurrentAlbumPage = savedInstanceState.getInt("ALBUM_PAGE");
+            mCurrentAlbumPage = savedInstanceState.getInt(KeysUtil.ALBUM_PAGE_NUMBER_KEY);
             CountryAlbumLoader loader = ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID));
             if(loader != null){
                 mCountryAlbumAdapter.updatePhotos(((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).getSavedPhotos());
@@ -62,14 +72,10 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
                     @Override
                     public void run() {
                         mCountryAlbumAdapter.notifyPhotosUpdates();
-
                     }
                 });
             }
-
         }
-        return view;
-
     }
 
     @Override
@@ -81,11 +87,21 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
 
         mAlbumName = getArguments().getString(KeysUtil.ALBUM_NAME_KEY);
         mCategoryName = getArguments().getString(KeysUtil.CATEGORY_NAME_KEY);
-        mCountryAlbumAdapter.setRecyclerViewLoadingState(true);
+        mCountryAlbumAdapter.setAdapterLoadingState(true);
 
         getLoaderManager().initLoader(KeysUtil.ALBUM_LOADER_ID, null, CountryAlbumFragment.this);
 
     }
+
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState: page number="+mCurrentAlbumPage+" item number="+mCountryAlbumAdapter.getPhotos().size());
+        outState.putInt(KeysUtil.ALBUM_PAGE_NUMBER_KEY, mCurrentAlbumPage);
+        if(mCountryAlbumAdapter.getPhotos().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).setSavedPhotos(mCountryAlbumAdapter.getPhotos());
+    }
+
 
     @Override
     public Loader<Object> onCreateLoader(int id, Bundle args) {
@@ -102,14 +118,13 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
     public void onLoadFinished(Loader<Object> loader,Object album ) {
         Log.d(TAG, "onLoadFinished: ");
         if (loader.getId() == KeysUtil.ALBUM_LOADER_ID) {
-                mCountryAlbumAdapter.setRecyclerViewLoadingState(false);
+            if(mCountryAlbumAdapter.isLoading())  mCountryAlbumAdapter.setAdapterLoadingState(false);
                 if(album != null){
                     mCountryAlbumAdapter.updatePhotos((ArrayList<Photo>) album);
                     mAlbumRecyclerView.post(new Runnable() {
                         @Override
                         public void run() {
                             mCountryAlbumAdapter.notifyPhotosUpdates();
-
                         }
                     });
                     }
@@ -121,15 +136,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
     public void onLoaderReset(Loader<Object> loader) {
 
     }
-
-    @Override
-    public void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-
-        outState.putInt("ALBUM_PAGE", mCurrentAlbumPage);
-        if(mCountryAlbumAdapter.getPhotos().get(0) != null) ((CountryAlbumLoader) getLoaderManager().getLoader(KeysUtil.ALBUM_LOADER_ID)).setSavedPhotos(mCountryAlbumAdapter.getPhotos());
-    }
-
     public void resetAlbumScroll(){
         mAlbumRecyclerView.smoothScrollToPosition(0);
     }

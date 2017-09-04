@@ -44,6 +44,7 @@ public class MainActivity extends AppCompatActivity implements
     public static final String DEFAULT_CATEGORY = "Landscapes";
 
     private DrawerLayout mDrawer;
+    private TabLayout mAlbumCategoriesTabLayout;
 
     private String currentCountryName;
     private String currentCategoryName = DEFAULT_CATEGORY;
@@ -79,7 +80,7 @@ public class MainActivity extends AppCompatActivity implements
         mNavigationView.setNavigationItemSelectedListener(this);
         mNavigationView.setCheckedItem(R.id.arab_region);
 
-        TabLayout mAlbumCategoriesTabLayout = findViewById(R.id.tab_layout);
+        mAlbumCategoriesTabLayout = findViewById(R.id.tab_layout);
         ArrayList<String> albumCategories = new ArrayList<>(Arrays.asList(getResources().getStringArray(R.array.albums_categories)));
         for (String category : albumCategories) {
             mAlbumCategoriesTabLayout.addTab(mAlbumCategoriesTabLayout.newTab().setText(category));
@@ -90,7 +91,6 @@ public class MainActivity extends AppCompatActivity implements
             currentCategoryName = savedInstanceState.getString(KeysUtil.CATEGORY_NAME_KEY);
             currentCountryName = savedInstanceState.getString(KeysUtil.ALBUM_NAME_KEY);
             currentRegionName = savedInstanceState.getString(KeysUtil.REGION_NAME_KEY);
-
             mAlbumCategoriesTabLayout.getTabAt(albumCategories.indexOf(currentCategoryName)).select();
         }
 
@@ -117,18 +117,30 @@ public class MainActivity extends AppCompatActivity implements
         super.onBackPressed();
     }
 
+
     @Override
     protected void onStart() {
         super.onStart();
         FragmentManager fm = getSupportFragmentManager();
 
-        if (fm.findFragmentByTag(CountriesListFragment.TAG) == null)
-            startCountriesListFragment(DEFAULT_REGION_NAME);
-        if (fm.findFragmentByTag(CountryAlbumFragment.TAG) == null)
-            startAlbumFragment(DEFAULT_REGION_NAME, DEFAULT_CATEGORY);
+        if (fm.findFragmentByTag(CountriesListFragment.TAG) == null) startCountriesListFragment(DEFAULT_REGION_NAME);
+        if (fm.findFragmentByTag(CountryAlbumFragment.TAG) == null)  startAlbumFragment(DEFAULT_REGION_NAME, DEFAULT_CATEGORY);
 
 
     }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        Log.d(TAG, "onSaveInstanceState: ");
+
+        outState.putString(KeysUtil.CATEGORY_NAME_KEY, currentCategoryName);
+        outState.putString(KeysUtil.ALBUM_NAME_KEY, currentCountryName);
+        outState.putString(KeysUtil.REGION_NAME_KEY, currentRegionName);
+
+
+    }
+
 
     @Override
     public void onCountryLongClicked(Country country, ImageView sharedImageView) {
@@ -144,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements
     public void onCountryClicked(String countryName) {
         Log.d(TAG, "onCountryClicked: ");
         currentCountryName = countryName;
+        ((CountriesListFragment)getSupportFragmentManager().findFragmentByTag(CountriesListFragment.TAG)).setFocusedCountryName(currentCountryName);
         startAlbumFragment(currentCountryName, currentCategoryName);
     }
 
@@ -207,14 +220,6 @@ public class MainActivity extends AppCompatActivity implements
     }
 
     @Override
-    protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
-        outState.putString(KeysUtil.CATEGORY_NAME_KEY, currentCategoryName);
-        outState.putString(KeysUtil.ALBUM_NAME_KEY, currentCountryName);
-        outState.putString(KeysUtil.REGION_NAME_KEY, currentRegionName);
-    }
-
-    @Override
     public void onTabSelected(TabLayout.Tab tab) {
         Log.d(TAG, "onTabSelected: ");
         currentCategoryName = tab.getText().toString();
@@ -229,7 +234,6 @@ public class MainActivity extends AppCompatActivity implements
     @Override
     public void onTabReselected(TabLayout.Tab tab) {
     }
-
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -263,6 +267,7 @@ public class MainActivity extends AppCompatActivity implements
         args.putString(KeysUtil.REGION_NAME_KEY, region);
         CountriesListFragment countriesListFragment = new CountriesListFragment();
         countriesListFragment.setArguments(args);
+
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_countries_list_container, countriesListFragment, CountriesListFragment.TAG)
                 .commit();
