@@ -131,7 +131,6 @@ public class CountryAlbumFragment extends Fragment implements LoaderManager.Load
             }
 
     }
-
     @Override
     public void onLoaderReset(Loader<Object> loader) {
 
