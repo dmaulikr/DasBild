@@ -1,5 +1,5 @@
 # DasBild [Stills in development]
-I really believe there are things and moments nobody would see or wintess if We didn’t photograph them. this why come DasBild. A photography app that provides you with a high quality professional photos for the the world regions and countries. All taken by <a href="https://500px.com/">the 500px</a> community photographer.
+I really believe there are places and moments nobody would see or wintess if We didn’t photograph them. this why come DasBild. A photography app that provides you with a high quality professional photos for the the world regions and countries. All taken by <a href="https://500px.com/">the 500px</a> community photographer.
 # Demo
 <div align="center">
   <img  src="screenShots/1.png" height="500" />
