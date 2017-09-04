@@ -1,10 +1,5 @@
 # DasBild
-android app : arabic countries high quality image gallery based on 500px website photos api
-# Concepts covered in this project
-  - Fragments Communication
-  - Web request with OKhttp library to RESTcountries Api and 500px photos API
-  - infinite recyclerView scrolling 
-  - using loaders
+I really believe there are things and moments nobody would see or wintess if We didn’t photograph them. this why come DasBild. A photography app that provides you with a high quality professional photos for the the world regions and countries. All taken by <a href="https://500px.com/">the 500px</a> community photographer.
 # Demo
 <div align="center">
   <img  src="screenShots/1.png" height="500" />
