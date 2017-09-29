@@ -1,7 +1,7 @@
 # DasBild [Stills in development]
 I really believe there are places and moments nobody would see or wintess if We didn’t photograph them. this why come DasBild. A photography app that provides you with a high quality professional photos for the the world regions and countries. All taken by <a href="https://500px.com/">the 500px</a> community photographers.
 #  Thank You
-I would to thank all the Algerian photographers and especially the one who I know, for thier contribution in the 500px website, providing DasBild with this mind blowing, amazing pictures of our dear country Algeria.
+I would to thank all the Algerian photographers and especially the one I know, for thier contribution in the 500px website, providing DasBild with this mind blowing, amazing pictures of our dear country Algeria.
 # Important remark for users 
   RunTime Permissions hadn't been added yet.
   So for the those who are launching the app on devices running android android marshmillow and above, they had to enable permissions manually from the app settings.
